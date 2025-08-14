@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+
+
+.animate-spin-slow {
+  display: inline-block;         
+  transform-origin: center;     
+  animation: spin-slow 20s linear infinite;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse-custom {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.move-up {
+  transform: translateY(-20px); /* Move image up by 20px */
+}
+
+
