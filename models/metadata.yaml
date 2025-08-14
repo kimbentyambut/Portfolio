@@ -1,0 +1,16 @@
+description: Ultralytics YOLOv8x-cls model trained on /content/Pathora-AI-(With-Random-Images)-1
+author: Ultralytics
+license: AGPL-3.0 https://ultralytics.com/license
+date: '2024-10-23T02:21:53.980919'
+version: 8.0.196
+stride: 1
+task: classify
+batch: 1
+imgsz:
+- 416
+- 416
+names:
+  0: BCC
+  1: Melanoma
+  2: SQCC
+  3: Undefined
