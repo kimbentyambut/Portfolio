@@ -130,7 +130,7 @@ const AIImageClassifier = () => {
       setLoading(true);
       setError(null);
       
-      const loadedModel = await tf.loadGraphModel(`${window.location.origin}/models/model.json`);
+      const loadedModel = await tf.loadGraphModel('/Portfolio/models/model.json');
       
       setModel(loadedModel);
       setLoading(false);

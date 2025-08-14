@@ -11,7 +11,7 @@ import profilePic2 from './assets/Image2.png'
 import TechStackCarousel from './components/TechStackCarousel'
 import AIImageClassifier from './components/AIImageClassifier'
 import Resume from './assets/resume.pdf'
-import Navbar from './components/Navbar' // Add this import
+import Navbar from './components/Navbar'
 import Tjbroz from './components/projects/Tjbroz'
 import Scraper from './components/projects/Webscraping'
 import Ocr from './components/projects/Ocr'
@@ -25,14 +25,14 @@ const ScrollArrow = ({ direction = "down", text, visible = true, onClick }) => {
       onClick={onClick}
     >
       <div className="flex flex-col items-center group">
-        {/* Text */}
+        {/* text */}
         <span className="text-white/80 text-sm font-medium mb-3 group-hover:text-white transition-colors duration-300 text-center">
           {text}
         </span>
 
-        {/* Arrow Container */}
+        {/* arrow cont */}
         <div className="relative">
-          {/* Animated Arrow */}
+          {/* animated arrow */}
           <div className="animate-bounce">
             <svg
               className="w-8 h-8 text-white/80 group-hover:text-white transition-colors duration-300"
@@ -48,7 +48,7 @@ const ScrollArrow = ({ direction = "down", text, visible = true, onClick }) => {
             </svg>
           </div>
 
-          {/* Glow Effect */}
+          {/* glowy */}
           <div className="absolute inset-0 w-8 h-8 bg-blue-400/20 rounded-full blur-lg group-hover:bg-blue-400/40 transition-all duration-300"></div>
         </div>
       </div>
@@ -257,13 +257,13 @@ function App() {
     {
       name: "Git",
       image: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg",
-      color: "from-orange-500 to-red-600", // warm orange-red
+      color: "from-orange-500 to-red-600", 
       description: "Version control"
     },
     {
       name: "Power BI",
       image: "https://windowsreport.com/wp-content/uploads/2019/08/Can-I-use-Power-Bi-for-Free.jpg",
-      color: "from-yellow-400 to-amber-600", // golden-yellow
+      color: "from-yellow-400 to-amber-600", 
       description: "Data Visualization"
     },
     {
@@ -281,8 +281,7 @@ function App() {
     {
       name: "Artificial Intelligence",
       image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvkUFmp5jSF-DhrD5102bzHU7RbidetfqYfA&s",
-      color: "from-purple-500 to-pink-600", // purple-pink
-      description: "AI Enthusiast"
+      color: "from-purple-500 to-pink-600", 
     }
 
   ]
@@ -339,7 +338,7 @@ function App() {
       >
 
         {typeof project.icon === 'string' && project.icon.length <= 2 ? (
-          <span className="text-2xl">{project.icon}</span> // emoji
+          <span className="text-2xl">{project.icon}</span>
         ) : (
           <img src={project.icon} alt={project.title} className="w-8 h-8" />
         )}
@@ -350,7 +349,7 @@ function App() {
   }
 
 
-  // Smooth scroll to section function
+
   const scrollToSection = (sectionIndex) => {
     const windowHeight = window.innerHeight;
     const targetScrollY = windowHeight * sectionIndex;
@@ -361,10 +360,10 @@ function App() {
     });
   };
 
-  // Initialize Vanta.js effect with dynamic script loading
+ 
   useEffect(() => {
     const loadScripts = async () => {
-      // Load Three.js first
+   
       if (!window.THREE) {
         await new Promise((resolve, reject) => {
           const script = document.createElement('script');
@@ -375,7 +374,7 @@ function App() {
         });
       }
 
-      // Load Vanta.js WAVES
+    
       if (!window.VANTA) {
         await new Promise((resolve, reject) => {
           const script = document.createElement('script');
@@ -386,7 +385,7 @@ function App() {
         });
       }
 
-      // Initialize Vanta WAVES effect after scripts are loaded
+    
       if (!vantaEffect.current && vantaRef.current && window.VANTA) {
         vantaEffect.current = window.VANTA.WAVES({
           el: vantaRef.current,
@@ -397,11 +396,11 @@ function App() {
           minWidth: 200.00,
           scale: 1.00,
           scaleMobile: 1.00,
-          color: 0x2975,          // Deep blue color for waves
-          shininess: 1.00,         // Wave surface shininess
-          waveHeight: 1.5,        // Height of the waves
-          waveSpeed: 0.15,          // Speed of wave animation
-          zoom: 0.7                // Zoom level
+          color: 0x2975,       
+          shininess: 1.00,        
+          waveHeight: 1.5,       
+          waveSpeed: 0.15,          
+          zoom: 0.7               
         });
       }
     };
@@ -498,7 +497,7 @@ function App() {
         };
       case 2:
         return {
-          visible: currentView === 'projects', // Only show when in projects overview
+          visible: currentView === 'projects', 
           text: "Get in Touch",
           onClick: () => scrollToSection(3.5)
         };
