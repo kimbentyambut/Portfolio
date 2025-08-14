@@ -81,17 +81,17 @@ export default function TechStackCarousel({ techStack = [] }) {
     <div className="w-full max-w-4xl mx-auto px-4">
       {/* header */}
       <div className="text-center mb-8">
-        <h2 className="text-5xl text-white font-bold mb-4">
+        <h2 className="text-5xl text-[#FEEEEC]/100 font-bold mb-4 ">
           My TechStack 🚀
         </h2>
-        <p className="text-white/70 text-lg">
+        <p className="text-#FEEEEC text-lg">
           Technologies I work with
         </p>
       </div>
 
       {/* carousel cont */}
       <div 
-        className="relative bg-white/10 backdrop-blur-sm rounded-2xl p-6"
+         className="relative bg-[#e799e7]/60 backdrop-blur-md rounded-2xl p-6"
         onMouseEnter={() => setIsAutoPlaying(false)}
         onMouseLeave={() => setIsAutoPlaying(true)}
       >
@@ -188,8 +188,8 @@ export default function TechStackCarousel({ techStack = [] }) {
               className={`
                 w-3 h-3 rounded-full transition-all duration-200
                 ${currentIndex === index 
-                  ? 'bg-white scale-110' 
-                  : 'bg-white/50 hover:bg-white/70'
+                  ? 'bg-[#FEEEEC]/40 scale-110' 
+                  : 'bg-[#FEEEEC]/40 hover:bg-white/70'
                 }
               `}
             />

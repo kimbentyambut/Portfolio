@@ -32,7 +32,7 @@ export default function TypingName() {
   }, []);
 
   return (
-  <h1 className="text-4xl md:text-5xl font-bold text-white/60 backdrop-blur-sm drop-shadow-md ">
+  <h1 className="text-4xl md:text-5xl font-bold text-#FEEEEC/60 backdrop-blur-sm drop-shadow-md ">
     {displayText}
     <span className="border-r-2 border-white animate-pulse ml-1"></span>
   </h1>

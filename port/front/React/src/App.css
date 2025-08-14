@@ -1,10 +1,7 @@
 @import "tailwindcss";
 
 
-@keyframes spin-slow {
-  to { transform: rotate(360deg); }
-}
-
+button:focus {box-shadow:none !important;}
 
 .animate-spin-slow {
   display: inline-block;         
@@ -23,7 +20,6 @@
 }
 
 .move-up {
-  transform: translateY(-20px); /* Move image up by 20px */
+  transform: translateY(-20px); 
 }
-
 

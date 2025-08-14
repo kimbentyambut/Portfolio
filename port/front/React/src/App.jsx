@@ -10,6 +10,7 @@ import DraggableProfile from './components/DraggableProfile'
 import profilePic2 from './assets/Image2.png'
 import TechStackCarousel from './components/TechStackCarousel'
 import AIImageClassifier from './components/AIImageClassifier'
+import AnimatedDownloadButton from './components/AnimatedDownloadButton';
 import Resume from './assets/resume.pdf'
 import Navbar from './components/Navbar'
 import Tjbroz from './components/projects/Tjbroz'
@@ -91,10 +92,10 @@ const ProjectsCarousel = ({ projects, onProjectClick }) => {
     <div className="w-full max-w-5xl mx-auto px-4">
       {/* header of carousel */}
       <div className="text-center mb-12">
-        <h2 className="text-5xl text-white font-bold mb-4">
+        <h2 className="text-5xl text-[#FEEEEC]/100 font-bold mb-4">
           Corporate Projects 🌌
         </h2>
-        <p className="text-xl text-gray-300">
+        <p className="text-xl text-[#FEEEEC]/90">
           Explore my latest work and innovations
         </p>
       </div>
@@ -102,7 +103,7 @@ const ProjectsCarousel = ({ projects, onProjectClick }) => {
       {/* container of caorusel */}
       <div className="relative">
         {/* carousel main */}
-        <div className="overflow-hidden rounded-2xl bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-sm border border-gray-700/30">
+        <div className="overflow-hidden rounded-2xl bg-gradient-to-br from-[#e799e7]/70 to-[#e799e7]/10 backdrop-blur-sm  ">
           <div
             className="flex transition-transform duration-500 ease-in-out"
             style={{ transform: `translateX(-${currentSlide * 100}%)` }}
@@ -282,6 +283,13 @@ function App() {
       name: "Artificial Intelligence",
       image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvkUFmp5jSF-DhrD5102bzHU7RbidetfqYfA&s",
       color: "from-purple-500 to-pink-600", 
+      description: "AI Enthusiast"
+    },
+    {
+      name: "Google AppScript",
+      image: "https://cdn-icons-png.flaticon.com/512/2965/2965300.png",
+      color: "from-purple-500 to-pink-600", 
+      description: "Google scripting language"
     }
 
   ]
@@ -363,7 +371,7 @@ function App() {
  
   useEffect(() => {
     const loadScripts = async () => {
-   
+      
       if (!window.THREE) {
         await new Promise((resolve, reject) => {
           const script = document.createElement('script');
@@ -374,33 +382,33 @@ function App() {
         });
       }
 
-    
+      
       if (!window.VANTA) {
         await new Promise((resolve, reject) => {
           const script = document.createElement('script');
-          script.src = 'https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js';
+          script.src = 'https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.clouds.min.js';
           script.onload = resolve;
           script.onerror = reject;
           document.head.appendChild(script);
         });
       }
 
-    
-      if (!vantaEffect.current && vantaRef.current && window.VANTA) {
-        vantaEffect.current = window.VANTA.WAVES({
+      if (!vantaEffect.current && vantaRef.current && window.VANTA && window.VANTA.CLOUDS) {
+        vantaEffect.current = window.VANTA.CLOUDS({
           el: vantaRef.current,
           mouseControls: true,
           touchControls: true,
           gyroControls: false,
           minHeight: 200.00,
           minWidth: 200.00,
-          scale: 1.00,
-          scaleMobile: 1.00,
-          color: 0x2975,       
-          shininess: 1.00,        
-          waveHeight: 1.5,       
-          waveSpeed: 0.15,          
-          zoom: 0.7               
+          backgroundColor: 0x1a1a2e,    
+          skyColor: 0xCD78F7,           
+          cloudColor: 0xadc1de,         
+          cloudShadowColor: 0x111828,   
+          sunColor: 0xff9919,          
+          sunGlareColor: 0xff6633,     
+          sunlightColor: 0xff9933,     
+          speed: 1.2                   
         });
       }
     };
@@ -549,11 +557,7 @@ function App() {
             </p>
 
             {/* button */}
-            <a href={Resume} download>
-              <button className="mt-10 bg-blue-600 text-white px-6 py-3 rounded-lg hover:shadow-lg opacity-70 hover:shadow-blue-500/50 transition-all duration-300">
-                Download Resume
-              </button>
-            </a>
+            <AnimatedDownloadButton resumeUrl={Resume} />
           </div>
         </section>
 
@@ -586,7 +590,12 @@ function App() {
                 <div className="w-full max-w-6xl mx-auto px-8 mb-10 ml-10">
                   <button
                     onClick={navigateBackToProjects}
-                    className="inline-flex items-center px-4 py-2 rounded-lg bg-gray-800/80 text-white hover:bg-gray-700/80 transition-all duration-300 border border-gray-600/50 hover:border-gray-500/50"
+                   className="inline-flex items-center px-4 py-2 rounded-lg 
+           bg-[#e799e7]/80 text-white 
+           hover:bg-[#e799e7]/100 
+           transition-all duration-300 
+           border border-[#e799e7]/50 hover:border-[#e799e7]/70 focus:outline-none focus:ring-0"
+
                   >
                     <svg className="mr-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
