@@ -104,6 +104,7 @@ const ProjectShowcase = ({
 
       <div className={`w-full h-[85vh] bg-gray-900 overflow-hidden flex flex-col rounded-xl backdrop-blur-md transition-all duration-300 ${isModalOpen ? 'blur-sm' : ''}`}>
         {/* compact head */}
+        
         <div className="flex-shrink-0 px-3 py-2 border-b border-gray-800 bg-gray-900/95">
           <div className="flex items-center justify-between">
             <div className="flex-1 min-w-0">
