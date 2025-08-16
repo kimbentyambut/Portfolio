@@ -11,7 +11,7 @@ const uri = process.env.MONGO_URI;
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
-    strict: true,
+    strict: false,
     deprecationErrors: true,
   }
 });
@@ -85,12 +85,16 @@ app.post("/api/likes", async (req, res) => {
 app.get("/api/likes", async (req, res) => {
   try {
     const doc = await db.collection("likes").findOne({ section: "landing" });
-    res.json({ count: doc && typeof doc.count === "number" ? doc.count : 0 });
+    res.json({
+      success: true, 
+      count: doc && typeof doc.count === "number" ? doc.count : 0
+    });
   } catch (error) {
     console.error("Error fetching likes:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ success: false, error: "Internal server error" });
   }
 });
+
 
 
 
