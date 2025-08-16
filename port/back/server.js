@@ -44,19 +44,27 @@ app.post("/api/contact", (req, res) => {
 });
 
 //route for like
-app.get("/api/likes", async (req, res) => {
+app.post("/api/likes", async (req, res) => {
   try {
-    const likesDoc = await db.collection("likes").findOne({ section: "landing" });
+    const result = await db.collection("likes").findOneAndUpdate(
+      { section: "landing" },
+      { $inc: { count: 1 } },
+      { upsert: true, returnDocument: "after" }
+    );
+
+
+    const updated = result.value || await db.collection("likes").findOne({ section: "landing" });
 
     res.json({
       success: true,
-      count: likesDoc ? likesDoc.count : 0
+      count: updated.count
     });
   } catch (error) {
-    console.error("Error fetching likes:", error);
+    console.error("Error incrementing likes:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
 
 //increm
 app.post("/api/likes", async (req, res) => {
