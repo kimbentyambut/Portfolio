@@ -45,7 +45,8 @@ const Navbar = ({ activeSection, onNavigate }) => {
     { id: 0, name: 'Home', icon: '' },
     { id: 1, name: 'Tech Stack', icon: '' },
     { id: 2, name: 'Projects', icon: '' },
-    { id: 3, name: 'Contact', icon: '' }
+    { id: 3, name: 'Playground', icon: '' },
+    { id: 4, name: 'Contact', icon: '' }
   ];
 
   const scrollToSection = (sectionId) => {
@@ -63,7 +64,10 @@ const Navbar = ({ activeSection, onNavigate }) => {
         targetScroll = windowHeight * 2;
         break;
       case 3:
-        targetScroll = windowHeight * 3.05;
+        targetScroll = windowHeight * 3.2;
+        break;
+      case 4:
+        targetScroll = windowHeight * 4.5;
         break;
       default:
         targetScroll = 0;
@@ -113,7 +117,7 @@ const Navbar = ({ activeSection, onNavigate }) => {
             </div>
           </div>
 
-           <div className="hidden md:flex flex-1 justify-center space-x-8 -ml-38">
+           <div className="hidden md:flex flex-1 justify-end space-x-8">
   {navItems.map((item) => (
     <button
       key={item.id}
