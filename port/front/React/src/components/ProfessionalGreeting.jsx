@@ -29,19 +29,18 @@ const ProfessionalGreeting = ({ name = "Kevin" }) => {
 
   return (
   <div className="mb-6">
-    <div className="text-lg mb-2 font-light relative inline-block">
+    <div className="text-lg mb-2 font-light">
       <span className="shiny-text">WELCOME TO MY WORLD ✨</span>
     </div>
-    <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight mb-2 relative inline-block">
-  <span className="shiny-text">
-    {displayText}
-  </span>
-  {!isComplete && (
-    <span className="animate-pulse text-purple-300 ml-1">|</span>
-  )}
-</h1>
+    <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-2">
+      <span className="shiny-text">{displayText}</span>
+      {!isComplete && (
+        <span className="animate-pulse text-purple-300 ml-1">|</span>
+      )}
+    </h1>
   </div>
 );
+
 
 };
 
