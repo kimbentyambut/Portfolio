@@ -48,34 +48,18 @@ app.post("/api/contact", (req, res) => {
 app.post("/api/likes", async (req, res) => {
   try {
     const result = await db.collection("likes").findOneAndUpdate(
-      { section: "landing" },
-      { $inc: { count: 1 } },
-      {
-        upsert: true,
-        returnDocument: "after",
-    
-        setDefaultsOnInsert: true
-      }
+      { section: "landing" },        // filter
+      { $inc: { count: 1 } },        // increment count
+      { returnDocument: "after", upsert: true } // return new doc, create if missing
     );
-
-  
-    if (!result.value) {
-      await db.collection("likes").updateOne(
-        { section: "landing" },
-        { $set: { count: 1 } },
-        { upsert: true }
-      );
-    }
-
-    const updated = await db.collection("likes").findOne({ section: "landing" });
 
     res.json({
       success: true,
-      count: updated.count
+      count: result.value.count,
     });
   } catch (error) {
-    console.error("Error incrementing likes:", error);
-    res.status(500).json({ error: "Internal server error" });
+    console.error("Error updating likes:", error);
+    res.status(500).json({ success: false, error: "Internal server error" });
   }
 });
 
@@ -86,14 +70,16 @@ app.get("/api/likes", async (req, res) => {
   try {
     const doc = await db.collection("likes").findOne({ section: "landing" });
     res.json({
-      success: true, 
-      count: doc && typeof doc.count === "number" ? doc.count : 0
+      success: true,
+      count: doc?.count ?? 0,
     });
   } catch (error) {
     console.error("Error fetching likes:", error);
     res.status(500).json({ success: false, error: "Internal server error" });
   }
 });
+
+console.log("POST /api/likes hit");
 
 
 
