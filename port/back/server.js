@@ -50,8 +50,25 @@ app.post("/api/likes", async (req, res) => {
     const result = await db.collection("likes").findOneAndUpdate(
       { section: "landing" },        // filter
       { $inc: { count: 1 } },        // increment count
-      { returnDocument: "after", upsert: true } // return new doc, create if missing
+      { 
+        returnDocument: "after", 
+        upsert: true,
+ 
+        projection: { count: 1 }
+      } 
     );
+
+
+    if (!result || !result.value || typeof result.value.count !== 'number') {
+
+      const doc = await db.collection("likes").findOne({ section: "landing" });
+      const count = doc?.count ?? 1; 
+      
+      return res.json({
+        success: true,
+        count: count,
+      });
+    }
 
     res.json({
       success: true,

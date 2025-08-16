@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const API = "https://portfolio-ahuh.onrender.com/api";
 
@@ -7,16 +7,36 @@ const LikeButton = () => {
   const [loading, setLoading] = useState(true);
   const [popping, setPopping] = useState(false);
   const [pending, setPending] = useState(false);
-  const [reqId, setReqId] = useState(0); // to ignore stale responses
+  const abortControllerRef = useRef(null);
 
-  const fetchCount = async (currentId) => {
+  const fetchCount = async () => {
     try {
-      const res = await fetch(`${API}/likes`, { cache: "no-store" });
+
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      
+
+      abortControllerRef.current = new AbortController();
+      
+      const res = await fetch(`${API}/likes`, { 
+        cache: "no-store",
+        signal: abortControllerRef.current.signal
+      });
+      
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      
       const data = await res.json();
-      // ignore if a newer request started after this one
-      if (currentId !== reqId) return;
+      
       if (data?.success && typeof data.count === "number") {
         setLikes(data.count);
+      }
+    } catch (error) {
+      if (error.name !== 'AbortError') {
+        console.error("Error fetching likes:", error);
+   
       }
     } finally {
       setLoading(false);
@@ -24,34 +44,44 @@ const LikeButton = () => {
   };
 
   useEffect(() => {
-    const id = reqId + 1;
-    setReqId(id);
-    fetchCount(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchCount();
+    
+
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
   }, []); // on mount
 
   const handleLike = async () => {
-    if (pending) return;         // block spam clicks during a request
+    if (pending) return;
     setPending(true);
     setPopping(true);
 
-    // optimistic bump
-    setLikes((prev) => prev + 1);
-
     try {
-      await fetch(`${API}/likes`, {
+      const res = await fetch(`${API}/likes`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         cache: "no-store",
       });
 
-      // after POST, refetch canonical count
-      const id = reqId + 1;
-      setReqId(id);
-      await fetchCount(id);
-    } catch {
-      // rollback optimistic bump on failure
-      setLikes((prev) => Math.max(0, prev - 1));
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const data = await res.json();
+      
+
+      if (data?.success && typeof data.count === "number") {
+        setLikes(data.count);
+      } else {
+   
+        setLikes((prev) => prev + 1);
+      }
+    } catch (error) {
+      console.error("Error updating likes:", error);
+ 
     } finally {
       setPending(false);
       setTimeout(() => setPopping(false), 500);
@@ -73,7 +103,7 @@ const LikeButton = () => {
         </span>
       )}
 
-      <svg viewBox="0 0 24 24" className="w-6 h-6" aria-hidden="true">
+      <svg viewBox="0 0 24 24" className="w-6 h-6 fill-red-500" aria-hidden="true">
         <path d="M12 21s-6.716-4.438-9.333-7.056C.727 11.999.5 9.5 2.1 7.9a4.243 4.243 0 0 1 6 0L12 9.8l3.9-1.9a4.243 4.243 0 0 1 6 0c1.6 1.6 1.373 4.099-.567 6.044C18.716 16.562 12 21 12 21z" />
       </svg>
 
