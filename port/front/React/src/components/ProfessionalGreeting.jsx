@@ -4,7 +4,7 @@ import profilePic from "../assets/test.png";
 import profilePic2 from "../assets/Image2.png";
 import Resume from "../assets/resume.pdf"
 import { profile } from '@tensorflow/tfjs';
-
+import LikeButton from './LikeButton';
 
 const ProfessionalGreeting = ({ name = "Kevin" }) => {
   const [displayText, setDisplayText] = useState('');
@@ -42,7 +42,7 @@ const ProfessionalGreeting = ({ name = "Kevin" }) => {
   );
 };
 
-// Enhanced Profile Picture with 3D Frame Effect
+
 const StylizedProfilePicture = ({ 
   frontImage, 
   backImage, 
@@ -216,13 +216,15 @@ const ActionButtons = ({ resumeUrl }) => {
       <button className="bg-white text-purple-700 px-8 py-4 rounded-full font-semibold hover:bg-gray-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
         My Projects
       </button>
-      <button 
-        onClick={handleDownload}
-        disabled={isDownloading}
-        className="border-2 border-white/30 text-white px-8 py-4 rounded-full font-semibold hover:bg-white/10 hover:border-white/50 transition-all duration-300 transform hover:-translate-y-1 disabled:opacity-50"
-      >
-        {isDownloading ? 'Downloading...' : 'Download CV'}
-      </button>
+     <button 
+  onClick={handleDownload}
+  disabled={isDownloading}
+  className="bg-white text-purple-700 px-8 py-4 rounded-full font-semibold hover:bg-gray-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 disabled:opacity-50"
+>
+  {isDownloading ? 'Downloading...' : 'Download CV'}
+</button>
+
+      <LikeButton></LikeButton>
     </div>
   );
 };
