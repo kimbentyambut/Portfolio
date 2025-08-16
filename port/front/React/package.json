@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "git subtree push --prefix dist origin gh-pages"
+    "deploy": "gh-pages -d dist"
+    
   },
   "dependencies": {
     "react": "^19.1.1",
