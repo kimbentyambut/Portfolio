@@ -59,7 +59,7 @@ const TypeRacerGame = () => {
   const usernameInputRef = useRef(null);
 
 
-  const API_BASE = 'http://localhost:5000/api';
+  const API_BASE = 'https://portfolio-ahuh.onrender.com/api';
 
   useEffect(() => {
     if (selectedChallenge) {
