@@ -44,20 +44,34 @@ app.post("/api/contact", (req, res) => {
 });
 
 //route for like
+
 app.post("/api/likes", async (req, res) => {
   try {
     const result = await db.collection("likes").findOneAndUpdate(
       { section: "landing" },
       { $inc: { count: 1 } },
-      { upsert: true, returnDocument: "after" } // ensures updated doc is returned
+      {
+        upsert: true,
+        returnDocument: "after",
+    
+        setDefaultsOnInsert: true
+      }
     );
 
-    // If result.value is null (newly created doc), fetch it again
-    const updated = result.value || await db.collection("likes").findOne({ section: "landing" });
+  
+    if (!result.value) {
+      await db.collection("likes").updateOne(
+        { section: "landing" },
+        { $set: { count: 1 } },
+        { upsert: true }
+      );
+    }
+
+    const updated = await db.collection("likes").findOne({ section: "landing" });
 
     res.json({
       success: true,
-      count: updated ? updated.count : 0
+      count: updated.count
     });
   } catch (error) {
     console.error("Error incrementing likes:", error);
@@ -71,12 +85,13 @@ app.post("/api/likes", async (req, res) => {
 app.get("/api/likes", async (req, res) => {
   try {
     const doc = await db.collection("likes").findOne({ section: "landing" });
-    res.json({ count: doc ? doc.count : 0 });
+    res.json({ count: doc && typeof doc.count === "number" ? doc.count : 0 });
   } catch (error) {
     console.error("Error fetching likes:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
 
 
 
