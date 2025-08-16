@@ -7,7 +7,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const uri = "mongodb+srv://kevin:kevin@cluster0.6yrtra1.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const uri = process.env.MONGO_URI;
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -243,7 +243,7 @@ app.get("/api/stats", async (req, res) => {
         totalAttempts: totalAttempts,
         topWpm: topWpmRecord ? {
           wpm: topWpmRecord.wpm,
-          user: topWpmRecord.displayName,
+           user: topWpmRecord.username,
           challenge: topWpmRecord.challenge
         } : null
       }
