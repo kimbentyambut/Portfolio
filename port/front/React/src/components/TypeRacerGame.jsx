@@ -5,30 +5,28 @@ const TypeRacerGame = () => {
   const defaultTexts = [
     {
       title: "More About me!",
-      text: "Hello! My name is Kevin, a 22-year-old from Baguio City. I grew up surrounded by my six dogs Bimbim, Bambam, Badboy, Beauty, Bearbear, and Princess and my cat named Jaguar. I studied Information Technology at Saint Louis University in Baguio. Typing fast feels just like racing, and I'm here to show my speed!",
-      challengeWpm: 75,
-      myTime: "42.3s"
+      text: "Hello! My name is Kevin, a 22-year-old from Baguio City. I grew up surrounded by my six dogs Bimbim, Bambam, Badboy, Beauty, Bearbear, and Princess and my cat named Jaguar. I studied Information Technology at Saint Louis University in Baguio. My hobbies are singing, playing the guitar, and jogging. Typing fast feels just like racing, and I'm here to show my speed!",
+      challengeWpm: 107,
+      myTime: "35.9s"
     },
     {
-      title: "Tech Philosophy", 
-      text: "Any fool can write code that a computer can understand. Good programmers write code that humans can understand. Simplicity is the ultimate sophistication.",
-      challengeWpm: 80,
-      myTime: "38.7s"
+      title: "School Experiences", 
+      text: "I started programming with Java and SQL since those were the main languages in school. I built many projects like data structures, CRUD applications, CORBA, and even remote method interfaces. I really enjoy object oriented programming, which is why I chose React as my front end framework. For web development, I experimented with WordPress for ecommerce, and also built websites like a document review system for my university using PHP, Node, React, HTML, CSS, and SQL.",
+      challengeWpm: 112,
+      myTime: "40.75s"
     },
     {
-      title: "Kevin's Challenge",
-      text: "Building beautiful user interfaces requires attention to detail, patience, and a deep understanding of user experience. Every pixel matters, every animation counts.",
-      challengeWpm: 85,
-      myTime: "35.2s"
+      title: "Kevin's Motto",
+      text: "I keep reminding myself that I am still a junior developer who does not know everything yet. This mindset keeps me humble and open to new ideas. I enjoy asking questions, learning from people with more experience, and experimenting with different tools and frameworks. Every project, no matter how small, is a chance to improve my skills and discover better ways of solving problems. The more I learn, the more I realize how much there is still to explore, and that is what makes this journey exciting." ,
+      challengeWpm: 102,
+      myTime: "51.2s"
     }
   ];
-
 
   const [username, setUsername] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showUsernameModal, setShowUsernameModal] = useState(true);
   
- 
   const [customText, setCustomText] = useState('');
   const [customWpm, setCustomWpm] = useState(75);
   const [selectedChallenge, setSelectedChallenge] = useState(defaultTexts[0]);
@@ -47,6 +45,11 @@ const TypeRacerGame = () => {
   const [timeElapsed, setTimeElapsed] = useState(0);
   const [timerInterval, setTimerInterval] = useState(null);
   
+  // Track total characters typed for accurate accuracy calculation
+  const [totalCharsTyped, setTotalCharsTyped] = useState(0);
+  const [correctCharsTyped, setCorrectCharsTyped] = useState(0);
+  const [mistakesMade, setMistakesMade] = useState(0);
+  const [keystrokeHistory, setKeystrokeHistory] = useState([]);
   
   const [leaderboards, setLeaderboards] = useState({});
   const [showLeaderboard, setShowLeaderboard] = useState(false);
@@ -57,7 +60,6 @@ const TypeRacerGame = () => {
   const inputRef = useRef(null);
   const gameAreaRef = useRef(null);
   const usernameInputRef = useRef(null);
-
 
   const API_BASE = 'https://portfolio-ahuh.onrender.com/api';
 
@@ -70,7 +72,7 @@ const TypeRacerGame = () => {
   }, [selectedChallenge]);
 
   useEffect(() => {
-    if (isGameActive) {
+    if (isGameActive && startTime) {
       const interval = setInterval(() => {
         setTimeElapsed(prev => prev + 0.1);
       }, 100);
@@ -84,7 +86,7 @@ const TypeRacerGame = () => {
       clearInterval(timerInterval);
       setTimerInterval(null);
     }
-  }, [isGameActive]);
+  }, [isGameActive, startTime]);
 
   useEffect(() => {
     if (isGameActive && timeElapsed > 0) {
@@ -92,11 +94,6 @@ const TypeRacerGame = () => {
       const wordsTyped = userInput.trim().split(/\s+/).filter(word => word.length > 0).length;
       const currentWpm = timeInMinutes > 0 ? Math.round(wordsTyped / timeInMinutes) : 0;
       setWpm(currentWpm);
-      
-      const correctChars = userInput.split('').filter((char, index) => char === currentText[index]).length;
-      const totalChars = userInput.length;
-      const currentAccuracy = totalChars > 0 ? Math.round((correctChars / totalChars) * 100) : 100;
-      setAccuracy(currentAccuracy);
     }
   }, [userInput, timeElapsed, isGameActive, currentText]);
 
@@ -104,6 +101,18 @@ const TypeRacerGame = () => {
     fetchGlobalStats();
   }, []);
 
+  // Calculate accuracy with weighted mistakes (mistakes have more impact)
+  const calculateAccuracy = () => {
+    if (totalCharsTyped === 0) return 100;
+    
+    // Apply penalty weight to mistakes to make them more impactful
+    const mistakePenalty = mistakesMade * 2; // Each mistake counts as 2 wrong keystrokes
+    const effectiveWrongKeystrokes = (totalCharsTyped - correctCharsTyped) + mistakePenalty;
+    const effectiveTotalKeystrokes = totalCharsTyped + mistakePenalty;
+    
+    const accuracy = Math.max(0, Math.round(((effectiveTotalKeystrokes - effectiveWrongKeystrokes) / effectiveTotalKeystrokes) * 100));
+    return accuracy;
+  };
 
   const fetchLeaderboard = async (challenge) => {
     try {
@@ -114,7 +123,6 @@ const TypeRacerGame = () => {
       }
     } catch (error) {
       console.error('Error fetching leaderboard:', error);
-      
       setCurrentLeaderboard([]);
     }
   };
@@ -128,7 +136,6 @@ const TypeRacerGame = () => {
       }
     } catch (error) {
       console.error('Error fetching stats:', error);
-      
       setGlobalStats({
         totalUsers: 0,
         totalChallenges: 3,
@@ -170,22 +177,27 @@ const TypeRacerGame = () => {
   };
 
   const handleUsernameSubmit = () => {
-  if (username.trim().length >= 2) {
-    setIsLoggedIn(true);
-    setShowUsernameModal(false);
+    if (username.trim().length >= 2) {
+      setIsLoggedIn(true);
+      setShowUsernameModal(false);
 
-
-    setTimeout(() => {
-      window.scrollTo({
-        top: window.innerHeight * 3.2,
-        behavior: "smooth", 
-      });
-    }, 200); 
-  }
-};
-
+      setTimeout(() => {
+        window.scrollTo({
+          top: window.innerHeight * 3.2,
+          behavior: "smooth", 
+        });
+      }, 200); 
+    }
+  };
 
   const resetGame = () => {
+    // Clear any existing timer first
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      setTimerInterval(null);
+    }
+
+    // Reset all game state
     setUserInput('');
     setStartTime(null);
     setEndTime(null);
@@ -197,30 +209,79 @@ const TypeRacerGame = () => {
     setWpm(0);
     setAccuracy(100);
     setTimeElapsed(0);
+    setTotalCharsTyped(0);
+    setCorrectCharsTyped(0);
+    setMistakesMade(0);
+    setKeystrokeHistory([]);
     setSubmissionStatus('');
-    if (timerInterval) {
-      clearInterval(timerInterval);
-      setTimerInterval(null);
-    }
+
+    // Focus the input after a brief delay to ensure state is updated
+    setTimeout(() => {
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+    }, 100);
   };
 
   const startGame = () => {
     resetGame();
-    setIsGameActive(true);
-    setStartTime(Date.now());
-    setTimeElapsed(0);
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
+    
+    // Prepare the game but don't start timer yet - wait for first keystroke
+    setTimeout(() => {
+      setIsGameActive(true);
+      // Don't set startTime here - wait for first input
+      setTimeElapsed(0);
+      
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+    }, 150);
   };
 
   const handleInputChange = (e) => {
     if (!isGameActive) return;
 
     const value = e.target.value;
+    const previousValue = userInput;
+    
+    // Start the timer on first keystroke
+    if (previousValue.length === 0 && value.length === 1 && !startTime) {
+      setStartTime(Date.now());
+    }
+    
     setUserInput(value);
 
-  
+    // Track every keystroke for cumulative accuracy
+    if (value.length > previousValue.length) {
+      // Character was added
+      const newCharIndex = previousValue.length;
+      const typedChar = value[newCharIndex];
+      const expectedChar = currentText[newCharIndex];
+      
+      setTotalCharsTyped(prev => prev + 1);
+      
+      if (typedChar === expectedChar) {
+        setCorrectCharsTyped(prev => prev + 1);
+      } else {
+        // Track that a mistake was made at this position
+        setMistakesMade(prev => prev + 1);
+      }
+    } else if (value.length < previousValue.length) {
+      // Character(s) were deleted - this is where we penalize corrections
+      const deletedCount = previousValue.length - value.length;
+      
+      // Count each deletion as an additional keystroke (backspace)
+      setTotalCharsTyped(prev => prev + deletedCount);
+      
+      // Each correction also counts as a mistake penalty
+      setMistakesMade(prev => prev + deletedCount);
+    }
+
+    // Update accuracy based on cumulative keystrokes with mistake penalties
+    const currentAccuracy = calculateAccuracy();
+    setAccuracy(currentAccuracy);
+
+    // Check for completion
     if (value === currentText) {
       setEndTime(Date.now());
       setIsGameActive(false);
@@ -233,6 +294,7 @@ const TypeRacerGame = () => {
       setTimeout(() => submitResult(), 500);
     }
 
+    // Calculate word and character positions
     const words = currentText.split(' ');
     const userWords = value.split(' ');
     let charCount = 0;
@@ -246,12 +308,10 @@ const TypeRacerGame = () => {
     setCurrentWordIndex(wordIndex);
     setCurrentCharIndex(charCount + (userWords[userWords.length - 1] || '').length);
 
-
-
-
+    // Count current errors (characters that don't match)
     let errorCount = 0;
     for (let i = 0; i < value.length; i++) {
-      if (value[i] !== currentText[i]) {
+      if (i >= currentText.length || value[i] !== currentText[i]) {
         errorCount++;
       }
     }
@@ -348,7 +408,6 @@ const TypeRacerGame = () => {
     return userTimeSeconds <= myTimeSeconds ? 'text-green-400' : 'text-yellow-400';
   };
 
-
   if (showUsernameModal) {
     return (
       <div className="min-h-screen flex items-center justify-center p-3">
@@ -402,12 +461,9 @@ const TypeRacerGame = () => {
   return (
     <div className="min-h-screen p-3 pt-55">
       <div className="max-w-7xl mx-auto">
-  
         <div className="flex flex-col lg:flex-row gap-4">
-      
           <div className="flex-1 lg:max-w-4xl">
             <div className="bg-gradient-to-br from-slate-900/90 via-blue-900/20 to-slate-900/90 backdrop-blur-xl rounded-3xl border border-white/20 shadow-xl p-3 md:p-4 h-fit">
-         
               <div className="text-center mb-3">
                 <div className="flex flex-col sm:flex-row items-center justify-between mb-2 gap-2">
                   <div className="text-center sm:text-left">
@@ -430,7 +486,6 @@ const TypeRacerGame = () => {
               </div>
 
               <div className="space-y-3">
-             
                 <div>
                   <div className="flex flex-wrap gap-2 mb-3">
                     {defaultTexts.map((challenge, index) => (
@@ -447,15 +502,8 @@ const TypeRacerGame = () => {
                         <div className="sm:hidden">{challenge.title}</div>
                       </button>
                     ))}
-                     {/*<button
-                      onClick={() => setShowCustomInput(!showCustomInput)}
-                      className="px-2 py-1.5 rounded-2xl font-medium bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-white border border-purple-400/30 hover:from-purple-500/30 hover:to-pink-500/30 transition-all duration-300 text-xs"
-                    >
-                      Custom Text
-                    </button> */}
                   </div>
 
-              
                   {showCustomInput && (
                     <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-3 border border-white/20 mb-3">
                       <div className="space-y-2">
@@ -505,7 +553,9 @@ const TypeRacerGame = () => {
                     <div className="text-white/70 text-xs">WPM</div>
                   </div>
                   <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-2 text-center border border-white/20">
-                    <div className="text-lg font-bold text-cyan-300">{accuracy}%</div>
+                    <div className={`text-lg font-bold ${accuracy < 95 ? 'text-red-300' : accuracy < 98 ? 'text-yellow-300' : 'text-green-300'}`}>
+                      {accuracy}%
+                    </div>
                     <div className="text-white/70 text-xs">Accuracy</div>
                   </div>
                   <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-2 text-center border border-white/20">
@@ -526,19 +576,16 @@ const TypeRacerGame = () => {
                   {renderText()}
                 </div>
 
-             
                 <div>
                   <textarea
                     ref={inputRef}
                     value={userInput}
                     onChange={handleInputChange}
                     disabled={!isGameActive}
-                    placeholder={isGameActive ? "Start typing..." : "Click 'Start Challenge' to begin"}
+                    placeholder={isGameActive ? "Start typing to begin timer..." : "Click 'Start Challenge' to begin"}
                     className="w-full p-2.5 bg-white/10 border border-white/20 rounded-2xl text-white placeholder-white/50 resize-none h-14 focus:border-blue-400/50 focus:outline-none transition-colors disabled:opacity-50 text-sm"
                   />
                 </div>
-
-        
 
                 <div className="flex flex-col sm:flex-row gap-2 items-center justify-center">
                   <button
@@ -549,7 +596,7 @@ const TypeRacerGame = () => {
                   </button>
                   <button
                     onClick={resetGame}
-                    className="w-full sm:w-auto px-4 py-2 bg-white/10 text-white font-medium rounded-2xl hover:bg-white/20 border border-white/20 transition-all duration-300 text-sm"
+                    className="w-full sm:w-auto px-4 py-2 bg-slate-800/80 backdrop-blur-sm text-white font-medium rounded-2xl hover:bg-slate-700/80 border border-slate-600/50 transition-all duration-300 text-sm"
                   >
                     Reset
                   </button>
@@ -575,19 +622,12 @@ const TypeRacerGame = () => {
             </div>
           </div>
 
-      
           <div className={`w-full lg:w-80 ${showLeaderboard || 'hidden'} lg:block`}>
             <div className="bg-gradient-to-br from-slate-900/90 via-purple-900/20 to-slate-900/90 backdrop-blur-xl rounded-3xl border border-white/20 shadow-xl p-3 md:p-4 h-fit">
-           
               <div className="hidden lg:flex justify-between items-center mb-3">
                 <h3 className="text-sm font-bold text-white">
                   🏆 Leaderboard & Stats
                 </h3>
-                <button
-                  onClick={() => setShowLeaderboard(!showLeaderboard)}
-                  className="px-2 py-1 bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-white border border-purple-400/30 rounded-xl hover:from-purple-500/30 hover:to-pink-500/30 transition-all duration-300 text-xs"
-                >
-                </button>
               </div>
 
               <div className="space-y-3">
@@ -640,7 +680,6 @@ const TypeRacerGame = () => {
                   )}
                 </div>
 
-    
                 {globalStats && (
                   <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-3 border border-white/20">
                     <h3 className="text-sm font-bold text-white mb-2 text-center">
@@ -672,7 +711,6 @@ const TypeRacerGame = () => {
                   </div>
                 )}
 
-           
                 <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-3 border border-white/20">
                   <h3 className="text-sm font-bold text-white mb-2 text-center">
                     🚀 Quick Switch

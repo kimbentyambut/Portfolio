@@ -20,34 +20,28 @@ import FakeNews from './components/projects/FakeNews'
 import Ocr from './components/projects/Ocr'
 import ProjectsCarousel from "./components/ProjectsCarousel";
 
-
-
-
-
-
-
-
 const ScrollArrow = ({ direction = "down", text, visible = true, onClick }) => {
   return (
     <div
-      className={`fixed bottom-8 right-8 z-20 transition-all duration-1000 cursor-pointer ${visible
-        ? "opacity-100 translate-y-0"
-        : "opacity-0 translate-y-4 pointer-events-none"
-        }`}
+      className={`fixed bottom-4 right-4 sm:bottom-8 sm:right-8 z-20 transition-all duration-1000 cursor-pointer ${
+        visible
+          ? "opacity-100 translate-y-0"
+          : "opacity-0 translate-y-4 pointer-events-none"
+      }`}
       onClick={onClick}
     >
       <div className="flex flex-col items-center group">
-        {/* Text on top */}
+     
         {text && (
-          <span className="mb-3 text-white/80 text-sm font-medium text-center group-hover:text-white transition-colors duration-300">
+          <span className="mb-2 sm:mb-3 text-white/80 text-xs sm:text-sm font-medium text-center group-hover:text-white transition-colors duration-300 max-w-32 sm:max-w-none">
             {text}
           </span>
         )}
 
-        {/* Circle with bounce effect */}
-        <div className="w-12 h-12 bg-purple-600/30 rounded-full flex items-center justify-center animate-bounce hover:bg-purple-600/50 transition-colors duration-300">
+   
+        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-600/30 rounded-full flex items-center justify-center animate-bounce hover:bg-purple-600/50 transition-colors duration-300">
           <svg
-            className="w-6 h-6 text-white"
+            className="w-5 h-5 sm:w-6 sm:h-6 text-white"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -74,19 +68,23 @@ const ScrollArrow = ({ direction = "down", text, visible = true, onClick }) => {
   );
 };
 
-
-
-
-
-
-
 function App() {
   const [visibleSection, setVisibleSection] = useState(0)
   const [currentView, setCurrentView] = useState('projects')
+  const [isMobile, setIsMobile] = useState(false)
   const vantaRef = useRef(null)
   const vantaEffect = useRef(null)
 
-
+  // Check if device is mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   const myTechStack = [
     {
@@ -267,13 +265,18 @@ function App() {
   ]
 
 
-  const projectScrollTargets = {
+  const projectScrollTargets = isMobile ? {
+    'ai-classifier': 2.1,
+    'laundry': 2.1,
+    'scraper': 2.1,
+    'Ocr': 2.1,
+    'FakeNews': 2.1
+  } : {
     'ai-classifier': 1.93,
     'laundry': 2.04,
     'scraper': 2.04,
     'Ocr': 2.04,
     'FakeNews': 2.04
-
   }
 
   const projects = [
@@ -287,7 +290,7 @@ function App() {
     },
     {
       id: 'laundry',
-      title: 'Tj Broz Laundry Project (Contractual) ',
+      title: 'Tj Broz Laundry Project (Contractual)',
       description: 'A contractual project on a laundry shop in Baguio City',
       icon: '🫧',
       bgImage: tjlogo,
@@ -295,7 +298,7 @@ function App() {
     },
     {
       id: 'scraper',
-      title: 'Webscraping (Internship + Contractual) ',
+      title: 'Webscraping (Internship + Contractual)',
       description: 'A web scraping project for Zoho Analytics of Energin.co',
       icon: '💻',
       bgImage: energinlogo,
@@ -303,43 +306,21 @@ function App() {
     },
     {
       id: 'Ocr',
-      title: 'Optical Character Recognition (Contractual) ',
+      title: 'Optical Character Recognition (Contractual)',
       description: 'An OCR project for Energin',
       icon: '🤖',
       bgImage: energinlogo,
       component: 'Ocr'
     },
-     {
+    {
       id: 'FakeNews',
-      title: 'Fake News Detector (School Project) ',
+      title: 'Fake News Detector (School Project)',
       description: 'A Fake News Detector for Data Mining Subject',
       icon: '🤖',
       bgImage: energinlogo,
       component: 'FakeNews'
     }
-
-
   ]
-
-  {
-    projects.map(project => (
-      <div
-        className="p-4 rounded-lg bg-cover bg-center"
-        style={{ backgroundImage: `url(${project.bgImage})` }}
-      >
-
-        {typeof project.icon === 'string' && project.icon.length <= 2 ? (
-          <span className="text-2xl">{project.icon}</span>
-        ) : (
-          <img src={project.icon} alt={project.title} className="w-8 h-8" />
-        )}
-        <h3>{project.title}</h3>
-        <p>{project.description}</p>
-      </div>
-    ))
-  }
-
-
 
   const scrollToSection = (sectionIndex) => {
     const windowHeight = window.innerHeight;
@@ -350,8 +331,6 @@ function App() {
       behavior: 'smooth'
     });
   };
-
-
 
   useEffect(() => {
     const loadScripts = async () => {
@@ -375,22 +354,21 @@ function App() {
         });
       }
 
-      // ✅ FIX: use window.VANTA.NET not window.VANTA.net
       if (!vantaEffect.current && vantaRef.current && window.VANTA && window.VANTA.NET) {
         vantaEffect.current = window.VANTA.NET({
           el: vantaRef.current,
-          mouseControls: true,
-          touchControls: true,
+          mouseControls: !isMobile, 
+          touchControls: isMobile,
           gyroControls: false,
           minHeight: 200.0,
           minWidth: 200.0,
           backgroundColor: 0x1a0e34,
-          scale: 1.0,
-          scaleMobile: 1.0,
+          scale: isMobile ? 0.8 : 1.0, 
+          scaleMobile: 0.8,
           color: 0xe83fff,
-          points: 9.0,
-          maxDistance: 10.0,
-          spacing: 20.0,
+          points: isMobile ? 6.0 : 9.0, 
+          maxDistance: isMobile ? 8.0 : 10.0,
+          spacing: isMobile ? 15.0 : 20.0,
         });
       }
     };
@@ -403,40 +381,51 @@ function App() {
         vantaEffect.current = null;
       }
     };
-  }, []);
-
-
-
+  }, [isMobile]);
 
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
       const windowHeight = window.innerHeight;
-
-      if (scrollY < windowHeight * 0.8) {
-        setVisibleSection(0); 
-      } else if (scrollY < windowHeight * 1.8) {
-        setVisibleSection(1); 
-      } else if (scrollY < windowHeight * 2.8) {
-        setVisibleSection(2); 
-      } else if (scrollY < windowHeight * 3.8) {
-        setVisibleSection(3); 
+      
+      if (isMobile) {
+        //mobile treshold
+        if (scrollY < windowHeight * 1.2) {
+          setVisibleSection(0); 
+        } else if (scrollY < windowHeight * 2.2) {
+          setVisibleSection(1);
+        } else if (scrollY < windowHeight * 3.2) {
+          setVisibleSection(2); 
+        } else if (scrollY < windowHeight * 4.2) {
+          setVisibleSection(3);
+        } else {
+          setVisibleSection(4); 
+        }
       } else {
-        setVisibleSection(4); 
+    
+        if (scrollY < windowHeight * 0.8) {
+          setVisibleSection(0); 
+        } else if (scrollY < windowHeight * 1.8) {
+          setVisibleSection(1); 
+        } else if (scrollY < windowHeight * 2.8) {
+          setVisibleSection(2); 
+        } else if (scrollY < windowHeight * 3.8) {
+          setVisibleSection(3); 
+        } else {
+          setVisibleSection(4); 
+        }
       }
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
+  }, [isMobile]);
 
   useEffect(() => {
     if (visibleSection !== 2) {
       setCurrentView('projects');
     }
   }, [visibleSection]);
-
 
   const navigateToProject = (projectId) => {
     setCurrentView(projectId);
@@ -454,7 +443,6 @@ function App() {
     setCurrentView('projects');
   };
 
-
   const renderProjectComponent = (projectId) => {
     switch (projectId) {
       case 'ai-classifier':
@@ -466,33 +454,50 @@ function App() {
       case 'Ocr':
         return <Ocr />;
       case 'FakeNews':
-        return<FakeNews></FakeNews>
+        return <FakeNews />;
       default:
         return null;
     }
   };
 
-
   const getArrowProps = () => {
-    switch (visibleSection) {
-      case 0:
-        return { visible: true, text: "Scroll to see my Tech Stack", onClick: () => scrollToSection(0.93) };
-      case 1:
-        return { visible: true, text: "Explore my Projects", onClick: () => scrollToSection(1.9) };
-      case 2:
-        return { visible: true, text: "Visit My Playground", onClick: () => scrollToSection(3) };
-      case 3:
-        return { visible: true, text: "Get in Touch", onClick: () => scrollToSection(4.5) };
-      case 4:
-        return { visible: false }; 
-      default:
-        return { visible: false };
+    if (isMobile) {
+      
+      switch (visibleSection) {
+        case 0:
+          return { visible: true, text: "Tech Stack", onClick: () => scrollToSection(1) };
+        case 1:
+          return { visible: true, text: "Projects", onClick: () => scrollToSection(2) };
+        case 2:
+          return { visible: true, text: "Playground", onClick: () => scrollToSection(3) };
+        case 3:
+          return { visible: true, text: "Contact", onClick: () => scrollToSection(4) };
+        case 4:
+          return { visible: false };
+        default:
+          return { visible: false };
+      }
+    } else {
+
+      switch (visibleSection) {
+        case 0:
+          return { visible: true, text: "Scroll to see my Tech Stack", onClick: () => scrollToSection(0.93) };
+        case 1:
+          return { visible: true, text: "Explore my Projects", onClick: () => scrollToSection(1.9) };
+        case 2:
+          return { visible: true, text: "Visit My Playground", onClick: () => scrollToSection(3) };
+        case 3:
+          return { visible: true, text: "Get in Touch", onClick: () => scrollToSection(4.5) };
+        case 4:
+          return { visible: false };
+        default:
+          return { visible: false };
+      }
     }
   };
 
-
-  return (
-    <div className="w-full relative">
+      return (
+    <div className={`w-full relative ${isMobile ? 'overflow-x-hidden' : ''}`}>
       {/* ===== nav bar ===== */}
       <Navbar activeSection={visibleSection} />
 
@@ -505,48 +510,54 @@ function App() {
       {/* ==== scroll arrow animation ===== */}
       <ScrollArrow {...getArrowProps()} />
 
-      {/* ===== all secs ===== */}
+      {/* ===== all sections ===== */}
       <div className="relative z-10">
         {/* Section 1 - Home */}
-        <section className="w-full h-screen flex items-center justify-center bg-black/30">
-          <Profile></Profile>
+        <section className={`w-full ${isMobile ? 'min-h-screen px-4 pt-24' : 'h-screen'} flex items-center justify-center bg-black/30`}>
+          {isMobile ? (
+            <div className="w-full max-w-6xl mx-auto">
+              <Profile scrollToSection={scrollToSection} />
+            </div>
+          ) : (
+            <Profile scrollToSection={scrollToSection} />
+          )}
         </section>
 
         {/* Section 2 - TechStack */}
-        <section className="w-full h-screen flex items-center justify-center bg-black/30 ">
+        <section className={`w-full ${isMobile ? 'min-h-screen px-4 pt-24' : 'h-screen'} flex items-center justify-center bg-black/30`}>
           <div
-            className={`w-full transition-all duration-1000 ${visibleSection === 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-              }`}
+            className={`${isMobile ? 'w-full max-w-6xl mx-auto' : 'w-full'} transition-all duration-1000 ${
+              (visibleSection === 1 || (isMobile && (visibleSection === 0 || visibleSection === 2))) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+            }`}
           >
             <TechStackCarousel techStack={myTechStack} />
           </div>
         </section>
 
         {/* Section 3 - Projects */}
-        <section className="w-full min-h-screen flex flex-col items-center justify-start bg-black/30 py-16 ">
+        <section className={`w-full ${isMobile ? 'min-h-screen px-4 py-8 pt-24' : 'min-h-screen py-16'} flex flex-col items-center justify-start bg-black/30`}>
           <div
-            className={`w-full transition-all duration-1000 ${visibleSection === 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-              }`}
+            className={`${isMobile ? 'w-full max-w-6xl mx-auto' : 'w-full'} transition-all duration-1000 ${
+              (visibleSection === 2 || (isMobile && (visibleSection === 1 || visibleSection === 3))) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+            }`}
           >
             {currentView === 'projects' ? (
-
               <ProjectsCarousel
                 projects={projects}
                 onProjectClick={navigateToProject}
               />
             ) : (
-
               <>
                 {/* back button */}
-                <div className="w-full max-w-6xl mx-auto px-8 mb-10 ml-10">
+                <div className={`w-full ${isMobile ? 'mb-6 px-4' : 'max-w-6xl mx-auto px-8 mb-10 ml-10'}`}>
                   <button
                     onClick={navigateBackToProjects}
-                    className="inline-flex items-center px-4 py-2 rounded-lg 
-           bg-[#e799e7]/80 text-white 
-           hover:bg-[#e799e7]/100 
-           transition-all duration-300 
-           border border-[#e799e7]/50 hover:border-[#e799e7]/70 focus:outline-none focus:ring-0"
-
+                    className={`inline-flex items-center rounded-lg 
+                     bg-[#e799e7]/80 text-white 
+                     hover:bg-[#e799e7]/100 
+                     transition-all duration-300 
+                     border border-[#e799e7]/50 hover:border-[#e799e7]/70 focus:outline-none focus:ring-0
+                     ${isMobile ? 'px-3 py-2 text-sm' : 'px-4 py-2'}`}
                   >
                     <svg className="mr-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -556,7 +567,7 @@ function App() {
                 </div>
 
                 {/* project component */}
-                <div className="w-full max-w-[1100px] mx-auto">
+                <div className={`${isMobile ? 'w-full px-4' : 'w-full max-w-[1100px] mx-auto'}`}>
                   {renderProjectComponent(currentView)}
                 </div>
               </>
@@ -564,32 +575,35 @@ function App() {
           </div>
         </section>
 
-
-        <section className="w-full min-h-screen flex flex-col items-center justify-center bg-black/30 py-16 ">
+        {/* Section 4 - Playground */}
+        <section className={`w-full ${isMobile ? 'min-h-screen px-4 py-8 pt-24' : 'min-h-screen py-16'} flex flex-col items-center justify-center bg-black/30`}>
           <div
-            className={`w-full transition-all duration-1000 ${visibleSection === 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-              }`}
+            className={`${isMobile ? 'w-full max-w-6xl mx-auto' : 'w-full'} transition-all duration-1000 ${
+              (visibleSection === 3 || (isMobile && (visibleSection === 2 || visibleSection === 4))) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+            }`}
           >
-            <div className="playground-grid">
-              <div className="playground-item">
+            <div className={`playground-grid ${isMobile ? 'w-full' : ''}`}>
+              <div className={`playground-item ${isMobile ? 'w-full' : ''}`}>
                 <TypeRacerGame />
               </div>
             </div>
           </div>
         </section>
 
-
-
-        <section className="w-full h-screen flex items-center justify-center bg-black/30 ">
+        {/* Section 5 - Contact */}
+        <section className={`w-full ${isMobile ? 'min-h-screen px-4 pt-24' : 'h-screen'} flex items-center justify-center bg-black/30`}>
           <div
-            className={`flex flex-col items-center text-center p-10 text-white transition-opacity duration-1000 ${visibleSection === 4 ? 'opacity-100' : 'opacity-0'
-              }`}
+            className={`flex flex-col items-center text-center text-white transition-opacity duration-1000 ${
+              isMobile ? 'p-6 max-w-4xl mx-auto' : 'p-10'
+            } ${visibleSection === 4 ? 'opacity-100' : 'opacity-0'}`}
           >
-            <h2 className="text-5xl font-bold mb-4">Get In Touch</h2>
-            <p className="text-xl text-gray-300 max-w-lg">
+            <h2 className={`font-bold mb-4 ${isMobile ? 'text-3xl' : 'text-5xl'}`}>Get In Touch</h2>
+            <p className={`text-gray-300 max-w-lg ${isMobile ? 'text-lg mb-6' : 'text-xl'}`}>
               Interested in working together? Let's connect!
             </p>
-            <button className="mt-10 bg-purple-600 text-white px-6 py-3 rounded-lg hover:shadow-lg hover:shadow-pink-500/50 transition-all duration-300">
+            <button className={`bg-purple-600 text-white rounded-lg hover:shadow-lg hover:shadow-pink-500/50 transition-all duration-300 ${
+              isMobile ? 'mt-6 px-4 py-2' : 'mt-10 px-6 py-3'
+            }`}>
               Contact Me
             </button>
           </div>
