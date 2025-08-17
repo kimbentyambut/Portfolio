@@ -14,7 +14,6 @@ const ProfessionalGreeting = ({ name = "Kevin" }) => {
   
   const fullText = `Hello there! I'm ${name}`;
 
-
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -35,10 +34,8 @@ const ProfessionalGreeting = ({ name = "Kevin" }) => {
     });
   };
 
-  
   useEffect(() => {
     if (currentIndex < fullText.length) {
-
       const timer = setTimeout(() => {
         setDisplayText(prev => prev + fullText[currentIndex]);
         setCurrentIndex(prev => prev + 1);
@@ -51,11 +48,11 @@ const ProfessionalGreeting = ({ name = "Kevin" }) => {
   }, [currentIndex, fullText]);
 
   return (
-    <div className={`${isMobile ? 'mb-4 mt-4' : 'mb-3'}`}>
+    <div className={`${isMobile ? 'mb-4 mt-4 px-2' : 'mb-3'}`}>
       <div className={`font-light ${isMobile ? 'text-sm mb-2' : 'text-lg mb-1'}`}>
         <span className="shiny-text">WELCOME TO MY WORLD ✨</span>
       </div>
-      <h1 className={`font-bold leading-tight ${isMobile ? 'text-2xl sm:text-3xl mb-3' : 'text-4xl md:text-6xl mb-2'}`}>
+      <h1 className={`font-bold leading-tight ${isMobile ? 'text-xl sm:text-2xl mb-3 break-words' : 'text-4xl md:text-6xl mb-2'}`}>
         <span className="shiny-text">{displayText}</span>
         {!isComplete && (
           <span className="animate-pulse text-purple-300 ml-1">|</span>
@@ -64,7 +61,6 @@ const ProfessionalGreeting = ({ name = "Kevin" }) => {
     </div>
   );
 };
-
 
 const StylizedProfilePicture = ({ 
   frontImage, 
@@ -78,7 +74,6 @@ const StylizedProfilePicture = ({
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [isMobile, setIsMobile] = useState(false);
 
- 
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -140,7 +135,7 @@ const StylizedProfilePicture = ({
       >
         <div className="relative">
           <div className={`bg-gradient-to-br from-purple-600 via-purple-700 to-purple-800 rounded-3xl p-1 shadow-2xl shadow-purple-900/50 transform hover:rotate-6 transition-transform duration-500 ${
-            isMobile ? 'w-64 h-80 rotate-6' : 'w-80 h-96 rotate-12'
+            isMobile ? 'w-56 h-72 rotate-6' : 'w-80 h-96 rotate-12'
           }`}>
             <div className="w-full h-full bg-gradient-to-br from-purple-500 to-purple-600 rounded-3xl overflow-hidden relative">
               <div className="absolute inset-4 rounded-2xl overflow-hidden">
@@ -186,10 +181,8 @@ const StylizedProfilePicture = ({
   );
 };
 
-
 const SocialIcons = () => {
   const [isMobile, setIsMobile] = useState(false);
-
 
   useEffect(() => {
     const checkMobile = () => {
@@ -244,7 +237,6 @@ const ActionButtons = ({ resumeUrl, onProjectsClick }) => {
   const [isDownloading, setIsDownloading] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
- 
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -268,7 +260,6 @@ const ActionButtons = ({ resumeUrl, onProjectsClick }) => {
     setTimeout(() => setIsDownloading(false), 2000);
   };
 
-  
   const scrollToProjects = () => {
     const windowHeight = window.innerHeight;
     const targetScrollY = windowHeight * (isMobile ? 2 : 1.91); 
@@ -280,11 +271,11 @@ const ActionButtons = ({ resumeUrl, onProjectsClick }) => {
   };
 
   return (
-    <div className={`flex gap-3 ${isMobile ? 'flex-col mb-6' : 'flex-col sm:flex-row gap-4 mb-8'}`}>
+    <div className={`flex gap-3 ${isMobile ? 'flex-col mb-6 w-full max-w-xs mx-auto' : 'flex-col sm:flex-row gap-4 mb-8'}`}>
       <button 
         onClick={scrollToProjects} 
         className={`bg-white text-purple-700 font-semibold hover:bg-gray-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 ${
-          isMobile ? 'px-6 py-3 rounded-lg text-sm' : 'px-8 py-4 rounded-full'
+          isMobile ? 'px-6 py-3 rounded-lg text-sm w-full' : 'px-8 py-4 rounded-full'
         }`}
       >
         My Projects
@@ -294,13 +285,15 @@ const ActionButtons = ({ resumeUrl, onProjectsClick }) => {
         onClick={handleDownload}
         disabled={isDownloading}
         className={`bg-white text-purple-700 font-semibold hover:bg-gray-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 disabled:opacity-50 ${
-          isMobile ? 'px-6 py-3 rounded-lg text-sm' : 'px-8 py-4 rounded-full'
+          isMobile ? 'px-6 py-3 rounded-lg text-sm w-full' : 'px-8 py-4 rounded-full'
         }`}
       >
         {isDownloading ? 'Downloading...' : 'Download CV'}
       </button>
 
-      <LikeButton />
+      <div className={isMobile ? 'w-full flex justify-center' : ''}>
+        <LikeButton />
+      </div>
     </div>
   );
 };
@@ -308,7 +301,6 @@ const ActionButtons = ({ resumeUrl, onProjectsClick }) => {
 const ProfessionalLandingSection = () => {
   const [isMobile, setIsMobile] = useState(false);
   const resumeUrl = Resume;
-
 
   useEffect(() => {
     const checkMobile = () => {
@@ -322,29 +314,29 @@ const ProfessionalLandingSection = () => {
 
   return (
     <section className={`w-full flex items-center justify-center relative overflow-hidden ${
-      isMobile ? 'min-h-screen py-8' : 'h-screen'
+      isMobile ? 'min-h-screen py-8 px-4' : 'h-screen'
     }`}>
- 
+      {/* Background elements */}
       <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
       <div className="absolute bottom-1/3 right-1/4 w-48 h-48 bg-pink-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
       <div className="absolute top-1/2 right-1/3 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl animate-pulse delay-500"></div>
       
       <div className={`relative z-10 w-full max-w-7xl mx-auto grid items-center ${
-        isMobile ? 'grid-cols-1 gap-8 px-4' : 'px-6 grid-cols-1 lg:grid-cols-2 gap-12'
+        isMobile ? 'grid-cols-1 gap-6 px-2' : 'px-6 grid-cols-1 lg:grid-cols-2 gap-12'
       }`}>
         
-        <div className={`${isMobile ? 'text-center' : 'space-y-6'}`}>
+        <div className={`${isMobile ? 'text-center max-w-sm mx-auto' : 'space-y-6'}`}>
           <ProfessionalGreeting name="Kevin" />
           
           <div className={`${isMobile ? 'mb-4' : 'mb-6'}`}>
-            <h2 className={`font-bold text-white ${isMobile ? 'text-xl sm:text-2xl mb-3' : 'text-3xl md:text-5xl mb-4'}`}>
+            <h2 className={`font-bold text-white ${isMobile ? 'text-lg sm:text-xl mb-3' : 'text-3xl md:text-5xl mb-4'}`}>
               <span className="text-purple-300">Junior</span>{' '}
               <span className="bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
                 Developer
               </span>
             </h2>
             <p className={`text-white/80 leading-relaxed ${
-              isMobile ? 'text-sm max-w-sm mx-auto' : 'text-lg max-w-lg'
+              isMobile ? 'text-sm max-w-xs mx-auto' : 'text-lg max-w-lg'
             }`}>
               Passionate Junior Developer & AI enthusiast. I create innovative and visually 
               appealing digital experiences. I transform ideas into seamless designs that meet users' 
@@ -357,7 +349,7 @@ const ProfessionalLandingSection = () => {
           <SocialIcons />
         </div>
 
-        <div className={`flex ${isMobile ? 'justify-center mt-4' : 'justify-center lg:justify-end'}`}>
+        <div className={`flex ${isMobile ? 'justify-center mt-2' : 'justify-center lg:justify-end'}`}>
           <StylizedProfilePicture
             frontImage={profilePic}
             backImage={profilePic2}

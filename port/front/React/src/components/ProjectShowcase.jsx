@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 const ProjectShowcase = ({ 
   title = "Sample Project", 
-  description = "This is a sample project description to demonstrate the modal functionality.", 
+  description = "sample if no content.", 
   technologies = ["React", "JavaScript", "CSS"], 
   screenshots = [
     { url: "https://via.placeholder.com/800x600/e83fff/ffffff?text=Screenshot+1", title: "Main Dashboard" },
@@ -37,14 +37,14 @@ const ProjectShowcase = ({
 
     if (isModalOpen) {
       document.addEventListener('keydown', handleKeyDown);
-      document.body.classList.add('modal-open');
+      document.body.style.overflow = 'hidden';
     } else {
-      document.body.classList.remove('modal-open');
+      document.body.style.overflow = 'unset';
     }
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-      document.body.classList.remove('modal-open');
+      document.body.style.overflow = 'unset';
     };
   }, [isModalOpen]);
 
@@ -58,30 +58,41 @@ const ProjectShowcase = ({
     setIsAutoPlaying(false);
   };
 
-  const scrollToSection = (sectionIndex) => {
-    const windowHeight = window.innerHeight;
-    const targetScrollY = windowHeight * sectionIndex;
-  };
-
   const goToScreenshot = (index) => {
     setCurrentScreenshot(index);
     setIsAutoPlaying(false);
   };
 
-  const openModal = (index) => {
+  const openModal = (index, event) => {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
     setModalImageIndex(index);
     setIsModalOpen(true);
   };
 
-  const closeModal = () => {
+  const closeModal = (event) => {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
     setIsModalOpen(false);
   };
 
-  const nextModalImage = () => {
+  const nextModalImage = (event) => {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
     setModalImageIndex(prev => (prev + 1) % screenshots.length);
   };
 
-  const prevModalImage = () => {
+  const prevModalImage = (event) => {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
     setModalImageIndex(prev => prev === 0 ? screenshots.length - 1 : prev - 1);
   };
 
@@ -97,27 +108,33 @@ const ProjectShowcase = ({
     return screenshot.url;
   };
 
+  const handleModalBackdropClick = (event) => {
+   
+    if (event.target === event.currentTarget) {
+      closeModal(event);
+    }
+  };
+
+  const handleImageClick = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    openModal(currentScreenshot, event);
+  };
+
   return (
     <>
-      <style jsx global>{`
-        .modal-open {
-          height: 100vh;
-        }
-      `}</style>
-
-      <div className={`w-full h-[85vh] bg-gradient-to-br from-[#1a0e34] via-[#2a1b4a] to-[#1a0e34] overflow-hidden flex flex-col rounded-xl backdrop-blur-md transition-all duration-300 border-2 border-[#e83fff]/30 shadow-2xl shadow-[#e83fff]/20 ${isModalOpen ? 'blur-sm' : ''}`}>
+      <div className={`w-full min-h-[75vh] md:h-[85vh] bg-gradient-to-br from-[#1a0e34] via-[#2a1b4a] to-[#1a0e34] overflow-hidden flex flex-col rounded-xl backdrop-blur-md transition-all duration-300 border-2 border-[#e83fff]/30 shadow-2xl shadow-[#e83fff]/20`}>
         {/* compact head */}
-        
-        <div className="flex-shrink-0 px-3 py-2 border-b-2 border-[#e83fff]/40 bg-gradient-to-r from-[#1a0e34]/95 via-[#2a1b4a]/95 to-[#1a0e34]/95">
-          <div className="flex items-center justify-between">
+        <div className="flex-shrink-0 px-2 md:px-3 py-1.5 md:py-2 border-b-2 border-[#e83fff]/40 bg-gradient-to-r from-[#1a0e34]/95 via-[#2a1b4a]/95 to-[#1a0e34]/95">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-1.5 md:gap-0">
             <div className="flex-1 min-w-0">
-              <h1 className="text-base font-bold text-white truncate">
+              <h1 className="text-sm md:text-base font-bold text-white truncate">
                 {title}
               </h1>
-              <p className="text-xs text-white/90 line-clamp-2 leading-tight mt-0.5">{description}</p>
+              <p className="text-xs text-white/90 line-clamp-1 md:line-clamp-2 leading-tight mt-0.5">{description}</p>
             </div>
             
-            <div className="flex gap-1.5 ml-3 flex-shrink-0">
+            <div className="flex gap-1.5 md:ml-3 flex-shrink-0 self-start md:self-center">
               {liveUrl && (
                 <a
                   href={liveUrl}
@@ -150,12 +167,12 @@ const ProjectShowcase = ({
         </div>
 
         {/* main content */}
-        <div className="flex flex-1 min-h-0 gap-2 p-2">
-          {/* screenshot section */}
+        <div className="flex flex-col md:flex-row flex-1 min-h-0 gap-1.5 md:gap-2 p-1.5 md:p-2">
+     
           {screenshots.length > 0 && (
-            <div className="w-[45%] flex flex-col">
-              <div className="bg-gradient-to-br from-[#2a1b4a]/90 to-[#1a0e34]/90 rounded-lg border-2 border-[#e83fff]/40 backdrop-blur-sm h-full flex flex-col overflow-hidden shadow-xl shadow-[#e83fff]/10">
-                <div className="flex items-center justify-between p-2 border-b border-[#e83fff]/40 bg-[#e83fff]/10">
+            <div className="w-full md:w-[45%] flex flex-col order-1 md:order-1">
+              <div className="bg-gradient-to-br from-[#2a1b4a]/90 to-[#1a0e34]/90 rounded-lg border-2 border-[#e83fff]/40 backdrop-blur-sm h-48 md:h-full flex flex-col overflow-hidden shadow-xl shadow-[#e83fff]/10">
+                <div className="flex items-center justify-between p-1.5 md:p-2 border-b border-[#e83fff]/40 bg-[#e83fff]/10">
                   <h2 className="text-xs font-medium text-white flex items-center">
                     <svg className="w-3 h-3 mr-1.5 text-[#e83fff]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -164,7 +181,7 @@ const ProjectShowcase = ({
                   </h2>
                   
                   {screenshots.length > 1 && (
-                    <div className="flex space-x-1">
+                    <div className="hidden md:flex space-x-1">
                       {screenshots.map((_, index) => (
                         <button
                           key={index}
@@ -178,7 +195,7 @@ const ProjectShowcase = ({
                   )}
                 </div>
                 
-                <div className="flex-1 p-1.5 min-h-0">
+                <div className="flex-1 p-1 md:p-1.5 min-h-0">
                   <div className="relative h-full group">
                     <div className="relative bg-[#1a0e34]/80 rounded-lg overflow-hidden h-full border border-[#e83fff]/30">
                       <div className="w-full h-full bg-gradient-to-br from-[#2a1b4a]/40 to-[#1a0e34]/60 flex items-center justify-center">
@@ -188,7 +205,7 @@ const ProjectShowcase = ({
                             alt={screenshots[currentScreenshot].title || `Screenshot ${currentScreenshot + 1}`}
                             className="w-full h-full object-contain cursor-pointer hover:opacity-90 transition-opacity duration-200"
                             loading="lazy"
-                            onClick={() => openModal(currentScreenshot)}
+                            onClick={handleImageClick}
                           />
                         ) : (
                           <div className="text-white text-center">
@@ -204,7 +221,7 @@ const ProjectShowcase = ({
                         <>
                           <button 
                             onClick={prevScreenshot} 
-                            className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-[#1a0e34]/90 hover:bg-[#e83fff]/20 text-white p-1.5 rounded-full transition-all duration-300 border border-[#e83fff]/50 shadow-lg backdrop-blur-sm"
+                            className="absolute left-1 md:left-2 top-1/2 transform -translate-y-1/2 bg-[#1a0e34]/90 hover:bg-[#e83fff]/20 text-white p-1 md:p-1.5 rounded-full transition-all duration-300 border border-[#e83fff]/50 shadow-lg backdrop-blur-sm"
                           >
                             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -212,7 +229,7 @@ const ProjectShowcase = ({
                           </button>
                           <button 
                             onClick={nextScreenshot} 
-                            className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-[#1a0e34]/90 hover:bg-[#e83fff]/20 text-white p-1.5 rounded-full transition-all duration-300 border border-[#e83fff]/50 shadow-lg backdrop-blur-sm"
+                            className="absolute right-1 md:right-2 top-1/2 transform -translate-y-1/2 bg-[#1a0e34]/90 hover:bg-[#e83fff]/20 text-white p-1 md:p-1.5 rounded-full transition-all duration-300 border border-[#e83fff]/50 shadow-lg backdrop-blur-sm"
                           >
                             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -227,11 +244,14 @@ const ProjectShowcase = ({
                         </div>
                       )}
 
-                      <div className="absolute top-1.5 right-1.5 bg-[#1a0e34]/90 hover:bg-[#e83fff]/20 text-white p-1 rounded transition-all duration-200 border border-[#e83fff]/50 shadow-lg backdrop-blur-sm">
+                      <button
+                        onClick={handleImageClick}
+                        className="absolute top-1 md:top-1.5 right-1 md:right-1.5 bg-[#1a0e34]/90 hover:bg-[#e83fff]/20 text-white p-1 rounded transition-all duration-200 border border-[#e83fff]/50 shadow-lg backdrop-blur-sm"
+                      >
                         <svg className="w-3 h-3 text-[#e83fff]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
                         </svg>
-                      </div>
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -239,12 +259,12 @@ const ProjectShowcase = ({
             </div>
           )}
 
-          {/* Right Panel */}
-          <div className={`${screenshots.length > 0 ? 'w-[55%]' : 'w-full'} flex flex-col gap-1.5 overflow-hidden`}>
-            {/* Technologies - Compact */}
+          
+          <div className={`${screenshots.length > 0 ? 'w-full md:w-[55%]' : 'w-full'} flex flex-col gap-1.5 overflow-hidden order-2 md:order-2`}>
+         
             {technologies.length > 0 && (
-              <div className="bg-gradient-to-br from-[#2a1b4a]/90 to-[#1a0e34]/90 rounded-lg p-2 border-2 border-[#e83fff]/40 backdrop-blur-sm flex-shrink-0 shadow-xl shadow-[#e83fff]/10">
-                <div className="flex items-center justify-between mb-1.5">
+              <div className="bg-gradient-to-br from-[#2a1b4a]/90 to-[#1a0e34]/90 rounded-lg p-1.5 md:p-2 border-2 border-[#e83fff]/40 backdrop-blur-sm flex-shrink-0 shadow-xl shadow-[#e83fff]/10">
+                <div className="flex items-center justify-between mb-1 md:mb-1.5">
                   <h2 className="text-xs font-medium text-white flex items-center">
                     <svg className="w-3 h-3 mr-1.5 text-[#e83fff]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -267,7 +287,8 @@ const ProjectShowcase = ({
               </div>
             )}
 
-            <div className="grid grid-cols-3 gap-1.5 flex-1 min-h-0">
+   
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-1.5 flex-1 min-h-0">
               {features.length > 0 && (
                 <div className="bg-gradient-to-br from-[#2a1b4a]/90 to-[#1a0e34]/90 rounded-lg border-2 border-[#e83fff]/40 backdrop-blur-sm flex flex-col overflow-hidden shadow-xl shadow-[#e83fff]/10">
                   <div className="p-1.5 border-b border-[#e83fff]/40 bg-[#e83fff]/10 flex-shrink-0">
@@ -344,31 +365,29 @@ const ProjectShowcase = ({
         </div>
       </div>
 
-      {/* Modal */}
+   
       {isModalOpen && (
         <div 
           className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-[#1a0e34]/80"
-          onClick={closeModal}
+          onClick={handleModalBackdropClick}
         >
           <div 
-            className="relative flex items-center justify-center max-w-[90vw] max-h-[90vh] overflow-auto"
-            onClick={(e) => e.stopPropagation()}
+            className="relative flex items-center justify-center max-w-[95vw] md:max-w-[90vw] max-h-[95vh] md:max-h-[90vh] overflow-auto p-4"
           >
             <div 
               className="relative flex items-center justify-center"
-              onClick={(e) => e.stopPropagation()}
             >
               <img
                 src={getImageUrl(screenshots[modalImageIndex])}
                 alt={screenshots[modalImageIndex]?.title || `Screenshot ${modalImageIndex + 1}`}
-                className="max-w-[80vw] max-h-[80vh] object-contain rounded-lg shadow-2xl shadow-[#e83fff]/30 border-2 border-[#e83fff]/50"
+                className="max-w-[90vw] md:max-w-[80vw] max-h-[85vh] md:max-h-[80vh] object-contain rounded-lg shadow-2xl shadow-[#e83fff]/30 border-2 border-[#e83fff]/50"
               />
 
               <button
                 onClick={closeModal}
-                className="absolute top-2 right-2 bg-[#1a0e34]/90 hover:bg-[#e83fff]/20 text-white p-2 rounded-full transition-all duration-300 border-2 border-[#e83fff]/50 shadow-lg backdrop-blur-sm"
+                className="absolute top-1 md:top-2 right-1 md:right-2 bg-[#1a0e34]/90 hover:bg-[#e83fff]/20 text-white p-1.5 md:p-2 rounded-full transition-all duration-300 border-2 border-[#e83fff]/50 shadow-lg backdrop-blur-sm z-10"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
@@ -377,17 +396,17 @@ const ProjectShowcase = ({
                 <>
                   <button
                     onClick={prevModalImage}
-                    className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-[#1a0e34] p-3 rounded-full transition-all duration-300 border-2 border-[#e83fff]/50 shadow-lg"
+                    className="absolute left-2 md:left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-[#1a0e34] p-2 md:p-3 rounded-full transition-all duration-300 border-2 border-[#e83fff]/50 shadow-lg z-10"
                   >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                     </svg>
                   </button>
                   <button
                     onClick={nextModalImage}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-[#1a0e34] p-3 rounded-full transition-all duration-300 border-2 border-[#e83fff]/50 shadow-lg"
+                    className="absolute right-2 md:right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-[#1a0e34] p-2 md:p-3 rounded-full transition-all duration-300 border-2 border-[#e83fff]/50 shadow-lg z-10"
                   >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                   </button>
@@ -396,7 +415,7 @@ const ProjectShowcase = ({
             </div>
 
             {screenshots[modalImageIndex]?.title && (
-              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white/95 text-[#1a0e34] px-4 py-2 rounded-lg border-2 border-[#e83fff]/50 shadow-lg">
+              <div className="absolute bottom-2 md:bottom-4 left-1/2 transform -translate-x-1/2 bg-white/95 text-[#1a0e34] px-3 md:px-4 py-1.5 md:py-2 rounded-lg border-2 border-[#e83fff]/50 shadow-lg mx-4">
                 <h3 className="font-semibold text-sm">{screenshots[modalImageIndex].title}</h3>
                 {screenshots[modalImageIndex]?.description && (
                   <p className="text-[#1a0e34]/80 text-xs mt-1">{screenshots[modalImageIndex].description}</p>

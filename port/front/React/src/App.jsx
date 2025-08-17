@@ -526,8 +526,10 @@ function App() {
         {/* Section 2 - TechStack */}
         <section className={`w-full ${isMobile ? 'min-h-screen px-4 pt-24' : 'h-screen'} flex items-center justify-center bg-black/30`}>
           <div
-            className={`${isMobile ? 'w-full max-w-6xl mx-auto' : 'w-full'} transition-all duration-1000 ${
-              (visibleSection === 1 || (isMobile && (visibleSection === 0 || visibleSection === 2))) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+            className={`${isMobile ? 'w-full max-w-6xl mx-auto' : 'w-full'} ${
+              !isMobile ? `transition-all duration-1000 ${
+                visibleSection === 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+              }` : ''
             }`}
           >
             <TechStackCarousel techStack={myTechStack} />
@@ -537,8 +539,10 @@ function App() {
         {/* Section 3 - Projects */}
         <section className={`w-full ${isMobile ? 'min-h-screen px-4 py-8 pt-24' : 'min-h-screen py-16'} flex flex-col items-center justify-start bg-black/30`}>
           <div
-            className={`${isMobile ? 'w-full max-w-6xl mx-auto' : 'w-full'} transition-all duration-1000 ${
-              (visibleSection === 2 || (isMobile && (visibleSection === 1 || visibleSection === 3))) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+            className={`${isMobile ? 'w-full max-w-6xl mx-auto' : 'w-full'} ${
+              !isMobile ? `transition-all duration-1000 ${
+                visibleSection === 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+              }` : ''
             }`}
           >
             {currentView === 'projects' ? (
@@ -578,8 +582,10 @@ function App() {
         {/* Section 4 - Playground */}
         <section className={`w-full ${isMobile ? 'min-h-screen px-4 py-8 pt-24' : 'min-h-screen py-16'} flex flex-col items-center justify-center bg-black/30`}>
           <div
-            className={`${isMobile ? 'w-full max-w-6xl mx-auto' : 'w-full'} transition-all duration-1000 ${
-              (visibleSection === 3 || (isMobile && (visibleSection === 2 || visibleSection === 4))) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+            className={`${isMobile ? 'w-full max-w-6xl mx-auto' : 'w-full'} ${
+              !isMobile ? `transition-all duration-1000 ${
+                visibleSection === 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+              }` : ''
             }`}
           >
             <div className={`playground-grid ${isMobile ? 'w-full' : ''}`}>
@@ -593,9 +599,9 @@ function App() {
         {/* Section 5 - Contact */}
         <section className={`w-full ${isMobile ? 'min-h-screen px-4 pt-24' : 'h-screen'} flex items-center justify-center bg-black/30`}>
           <div
-            className={`flex flex-col items-center text-center text-white transition-opacity duration-1000 ${
+            className={`flex flex-col items-center text-center text-white ${
               isMobile ? 'p-6 max-w-4xl mx-auto' : 'p-10'
-            } ${visibleSection === 4 ? 'opacity-100' : 'opacity-0'}`}
+            } ${!isMobile ? `transition-opacity duration-1000 ${visibleSection === 4 ? 'opacity-100' : 'opacity-0'}` : ''}`}
           >
             <h2 className={`font-bold mb-4 ${isMobile ? 'text-3xl' : 'text-5xl'}`}>Get In Touch</h2>
             <p className={`text-gray-300 max-w-lg ${isMobile ? 'text-lg mb-6' : 'text-xl'}`}>
