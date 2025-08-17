@@ -29,25 +29,37 @@ const ProjectsCarousel = ({ projects, onProjectClick }) => {
     setIsAutoPlaying(false);
   };
 
-    const scrollToSection = (sectionIndex) => {
-    const windowHeight = window.innerHeight;
-    const targetScrollY = windowHeight * sectionIndex;
-
-    window.scrollTo({
-      top: targetScrollY,
-      behavior: 'smooth'
-    });
-  };
-
-
   const goToSlide = (index) => {
     setCurrentSlide(Math.min(index, maxSlide));
     setIsAutoPlaying(false);
   };
 
+  const handleProjectClick = (event, projectId) => {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    // Additional mobile-specific prevention
+    if (event.type === 'touchend') {
+      event.preventDefault();
+    }
+    
+    onProjectClick(projectId);
+  };
+
+  const handleCardClick = (event, projectId) => {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    // Additional mobile-specific prevention
+    if (event.type === 'touchend') {
+      event.preventDefault();
+    }
+    
+    onProjectClick(projectId);
+  };
+
   return (
     <div className="w-full max-w-7xl mx-auto px-4">
-
       <div className="text-center mb-12">
         <h2 className="text-5xl text-[#FEEEEC]/100 font-bold mb-4">
           Corporate Projects 🌌
@@ -60,13 +72,9 @@ const ProjectsCarousel = ({ projects, onProjectClick }) => {
         </div>
       </div>
 
- 
       <div className="relative">
-    
-    
         <div className="overflow-hidden rounded-2xl">
           <div className="relative h-[460px] flex items-center justify-center">
-
             {projects
               .slice(currentSlide, currentSlide + cardsPerView)
               .map((project, index) => {
@@ -92,23 +100,25 @@ const ProjectsCarousel = ({ projects, onProjectClick }) => {
                     style={{
                       transform: `translateX(${hoverTranslateX}px) translateY(${hoverTranslateY}px) rotate(${hoverRotation}deg) scale(${hoverScale})`,
                       zIndex: hoverZIndex,
-                      transition:
-                        "all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+                      transition: "all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
                     }}
                     onMouseEnter={() => setHoveredCard(actualIndex)}
                     onMouseLeave={() => setHoveredCard(null)}
-                    onClick={() => onProjectClick(project.id)}
+                    onClick={(e) => handleCardClick(e, project.id)}
+                    onTouchEnd={(e) => handleCardClick(e, project.id)}
                   >
-             
                     <div className="w-full h-full rounded-2xl bg-gradient-to-br from-[#e83fff]/90 to-[#e83fff]/30 backdrop-blur-lg border border-white/20 shadow-2xl overflow-hidden">
                       <div
                         className="absolute inset-0 bg-cover bg-center opacity-10"
-                        style={{ backgroundImage: `url(${project.bgImage})` }}
+                        style={{
+                          backgroundImage: `url(${project.bgImage})`,
+                        }}
                       />
+
                       <div className="relative z-10 p-6 h-full flex flex-col">
                         <div className="text-center mb-4">
                           {typeof project.icon === "string" &&
-                            project.icon.length <= 2 ? (
+                          project.icon.length <= 2 ? (
                             <span className="text-5xl block">
                               {project.icon}
                             </span>
@@ -120,31 +130,28 @@ const ProjectsCarousel = ({ projects, onProjectClick }) => {
                             />
                           )}
                         </div>
+
                         <h3 className="text-xl font-bold text-white text-center mb-3 leading-tight">
                           {project.title}
                         </h3>
+
                         <p className="text-gray-200 text-xs leading-relaxed text-center mb-4 flex-grow">
                           {project.description}
                         </p>
+
                         <div
-                          className={`transition-all duration-300 ${isHovered
+                          className={`transition-all duration-300 ${
+                            isHovered
                               ? "opacity-100 translate-y-0"
                               : "opacity-0 translate-y-4"
-                            }`}
+                          }`}
                         >
                           <button
-                            className="w-full py-2 px-3 rounded-xl 
-             bg-gradient-to-r from-[#1a0e34] to-[#e83fff] 
-             text-white font-semibold text-sm 
-             shadow-lg shadow-[#e83fff]/20
-             hover:shadow-[#e83fff]/40 
-             transition-all duration-300 
-             group-hover:scale-105"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onProjectClick(project.id);
-                            }}
-                            
+                            type="button"
+                            className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-[#1a0e34] to-[#e83fff] text-white font-semibold text-sm shadow-lg shadow-[#e83fff]/20 hover:shadow-[#e83fff]/40 transition-all duration-300 group-hover:scale-105 touch-manipulation"
+                            onClick={(e) => handleProjectClick(e, project.id)}
+                            onTouchEnd={(e) => handleProjectClick(e, project.id)}
+                            style={{ WebkitTouchCallout: 'none', WebkitUserSelect: 'none' }}
                           >
                             <span className="flex items-center justify-center">
                               Explore Project
@@ -163,14 +170,16 @@ const ProjectsCarousel = ({ projects, onProjectClick }) => {
                               </svg>
                             </span>
                           </button>
-
                         </div>
                       </div>
+
                       <div
-                        className={`absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-500/20 to-pink-500/20 transition-opacity duration-300 ${isHovered ? "opacity-100" : "opacity-0"
-                          }`}
+                        className={`absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-500/20 to-pink-500/20 transition-opacity duration-300 ${
+                          isHovered ? "opacity-100" : "opacity-0"
+                        }`}
                       />
                     </div>
+
                     <div className="absolute inset-0 rounded-2xl shadow-2xl shadow-purple-900/20 -z-10" />
                   </div>
                 );
@@ -178,8 +187,8 @@ const ProjectsCarousel = ({ projects, onProjectClick }) => {
           </div>
         </div>
 
- 
         <button
+          type="button"
           onClick={prevSlide}
           className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/40 hover:bg-black/60 backdrop-blur-sm border border-white/10 rounded-full p-3 transition-all duration-300 group opacity-70 hover:opacity-100 z-30"
           onMouseEnter={() => setIsAutoPlaying(false)}
@@ -200,6 +209,7 @@ const ProjectsCarousel = ({ projects, onProjectClick }) => {
         </button>
 
         <button
+          type="button"
           onClick={nextSlide}
           className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/40 hover:bg-black/60 backdrop-blur-sm border border-white/10 rounded-full p-3 transition-all duration-300 group opacity-70 hover:opacity-100 z-30"
           onMouseEnter={() => setIsAutoPlaying(false)}
@@ -220,23 +230,24 @@ const ProjectsCarousel = ({ projects, onProjectClick }) => {
         </button>
       </div>
 
-  
       <div className="flex justify-center mt-8 space-x-2">
         {Array.from({ length: maxSlide + 1 }).map((_, index) => (
           <button
             key={index}
+            type="button"
             onClick={() => goToSlide(index)}
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${currentSlide === index
+            className={`w-3 h-3 rounded-full transition-all duration-300 ${
+              currentSlide === index
                 ? "bg-white scale-125"
                 : "bg-white/40 hover:bg-white/60"
-              }`}
+            }`}
           />
         ))}
       </div>
 
- 
       <div className="flex justify-center mt-4">
         <button
+          type="button"
           onClick={() => setIsAutoPlaying(!isAutoPlaying)}
           className="text-white/60 hover:text-white/80 text-sm transition-colors duration-300"
         >
