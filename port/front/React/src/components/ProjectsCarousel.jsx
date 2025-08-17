@@ -29,6 +29,17 @@ const ProjectsCarousel = ({ projects, onProjectClick }) => {
     setIsAutoPlaying(false);
   };
 
+    const scrollToSection = (sectionIndex) => {
+    const windowHeight = window.innerHeight;
+    const targetScrollY = windowHeight * sectionIndex;
+
+    window.scrollTo({
+      top: targetScrollY,
+      behavior: 'smooth'
+    });
+  };
+
+
   const goToSlide = (index) => {
     setCurrentSlide(Math.min(index, maxSlide));
     setIsAutoPlaying(false);
@@ -133,6 +144,7 @@ const ProjectsCarousel = ({ projects, onProjectClick }) => {
                               e.stopPropagation();
                               onProjectClick(project.id);
                             }}
+                            
                           >
                             <span className="flex items-center justify-center">
                               Explore Project

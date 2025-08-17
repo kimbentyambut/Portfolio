@@ -28,8 +28,8 @@ const ProfessionalGreeting = ({ name = "Kevin" }) => {
   }, [currentIndex, fullText]);
 
   return (
-  <div className="mb-6">
-    <div className="text-lg mb-2 font-light">
+  <div className="mb-3">
+    <div className="text-lg mb-1 font-light">
       <span className="shiny-text">WELCOME TO MY WORLD ✨</span>
     </div>
     <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-2">

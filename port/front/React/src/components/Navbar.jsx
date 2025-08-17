@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 
-// Add these styles to your CSS file or include them in a <style> tag
 const customStyles = `
   button:focus,
   button:active,
@@ -58,13 +57,13 @@ const Navbar = ({ activeSection, onNavigate }) => {
         targetScroll = 0;
         break;
       case 1:
-        targetScroll = windowHeight * 0.98;
+        targetScroll = windowHeight * 0.93;
         break;
       case 2:
-        targetScroll = windowHeight * 2;
+        targetScroll = windowHeight * 1.9;
         break;
       case 3:
-        targetScroll = windowHeight * 3.2;
+        targetScroll = windowHeight * 3;
         break;
       case 4:
         targetScroll = windowHeight * 4.5;
