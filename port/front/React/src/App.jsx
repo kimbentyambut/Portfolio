@@ -22,6 +22,7 @@ import ProjectsCarousel from "./components/ProjectsCarousel";
 import Pathora from "./components/projects/pathora"
 import CommentsSection from './components/CommentsSection'
 import Footer from './components/Footer'
+import WorkExperienceRoadmap from './components/WorkExperienceRoadmap'
 
 const ScrollArrow = ({ direction = "down", text, visible = true, onClick }) => {
   return (
@@ -267,21 +268,21 @@ function App() {
     }
   ]
 
-
+  // Updated project scroll targets for 6 sections
   const projectScrollTargets = isMobile ? {
-    'ai-classifier': 2.4,
-    'laundry': 2.4,
-    'scraper': 2.4,
-    'Ocr': 2.4,
-    'FakeNews': 2.4,
-    'ai': 2.4
+    'ai-classifier': 4.4,
+    'laundry': 4.4,
+    'scraper': 4.4,
+    'Ocr': 4.4,
+    'FakeNews': 4.4,
+    'ai': 4.4
   } : {
-    'ai-classifier': 1.93,
-    'laundry': 2.04,
-    'scraper': 2.04,
-    'Ocr': 2.04,
-    'FakeNews': 2.04,
-    'ai' : 2.04
+    'ai-classifier': 3.93,
+    'laundry': 4.04,
+    'scraper': 4.04,
+    'Ocr': 4.04,
+    'FakeNews': 4.04,
+    'ai': 4.04
   }
 
   const projects = [
@@ -396,23 +397,26 @@ function App() {
     };
   }, [isMobile]);
 
+  // Updated scroll logic for 6 sections
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
       const windowHeight = window.innerHeight;
       
       if (isMobile) {
-        //mobile treshold
+        // Mobile thresholds for 6 sections
         if (scrollY < windowHeight * 1.2) {
-          setVisibleSection(0); 
+          setVisibleSection(0); // Home
         } else if (scrollY < windowHeight * 2.2) {
-          setVisibleSection(1);
+          setVisibleSection(1); // Tech Stack
         } else if (scrollY < windowHeight * 3.2) {
-          setVisibleSection(2); 
+          setVisibleSection(2); // Work Experience
         } else if (scrollY < windowHeight * 4.2) {
-          setVisibleSection(3);
+          setVisibleSection(3); // Projects
+        } else if (scrollY < windowHeight * 5.2) {
+          setVisibleSection(4); // Playground
         } else {
-          setVisibleSection(4); 
+          setVisibleSection(5); // Contact
         }
       } else {
     
@@ -423,9 +427,11 @@ function App() {
         } else if (scrollY < windowHeight * 2.8) {
           setVisibleSection(2); 
         } else if (scrollY < windowHeight * 3.8) {
-          setVisibleSection(3); 
-        } else {
+          setVisibleSection(3);
+        } else if (scrollY < windowHeight * 4.8) {
           setVisibleSection(4); 
+        } else {
+          setVisibleSection(5); 
         }
       }
     };
@@ -434,8 +440,9 @@ function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [isMobile]);
 
+
   useEffect(() => {
-    if (visibleSection !== 2) {
+    if (visibleSection !== 3) {
       setCurrentView('projects');
     }
   }, [visibleSection]);
@@ -475,35 +482,38 @@ function App() {
     }
   };
 
+
   const getArrowProps = () => {
     if (isMobile) {
-      
       switch (visibleSection) {
         case 0:
           return { visible: true, text: "Tech Stack", onClick: () => scrollToSection(1) };
         case 1:
-          return { visible: true, text: "Projects", onClick: () => scrollToSection(2) };
+          return { visible: true, text: "Experience", onClick: () => scrollToSection(2) };
         case 2:
-          return { visible: true, text: "Playground", onClick: () => scrollToSection(3) };
+          return { visible: true, text: "Projects", onClick: () => scrollToSection(3) };
         case 3:
-          return { visible: true, text: "Contact", onClick: () => scrollToSection(4) };
+          return { visible: true, text: "Playground", onClick: () => scrollToSection(4) };
         case 4:
+          return { visible: true, text: "Contact", onClick: () => scrollToSection(5) };
+        case 5:
           return { visible: false };
         default:
           return { visible: false };
       }
     } else {
-
       switch (visibleSection) {
         case 0:
           return { visible: true, text: "Scroll to see my Tech Stack", onClick: () => scrollToSection(0.93) };
         case 1:
-          return { visible: true, text: "Explore my Projects", onClick: () => scrollToSection(1.9) };
+          return { visible: true, text: "View my Experience", onClick: () => scrollToSection(1.96) };
         case 2:
-          return { visible: true, text: "Visit My Playground", onClick: () => scrollToSection(3) };
+          return { visible: true, text: "Explore my Projects", onClick: () => scrollToSection(2.92) };
         case 3:
-          return { visible: true, text: "Get in Touch", onClick: () => scrollToSection(4.13) };
+          return { visible: true, text: "Visit My Playground", onClick: () => scrollToSection(4.05) };
         case 4:
+          return { visible: true, text: "Get in Touch", onClick: () => scrollToSection(5.14) };
+        case 5:
           return { visible: false };
         default:
           return { visible: false };
@@ -511,7 +521,7 @@ function App() {
     }
   };
 
-      return (
+  return (
     <div className={`w-full relative ${isMobile ? 'overflow-x-hidden' : ''}`}>
       {/* ===== nav bar ===== */}
       <Navbar activeSection={visibleSection} />
@@ -527,7 +537,7 @@ function App() {
 
       {/* ===== all sections ===== */}
       <div className="relative z-10">
-        {/* Section 1 - Home */}
+        {/* Section 0 - Home */}
         <section className={`w-full ${isMobile ? 'min-h-screen px-4 pt-24' : 'h-screen'} flex items-center justify-center bg-black/30`}>
           {isMobile ? (
             <div className="w-full max-w-6xl mx-auto">
@@ -538,7 +548,7 @@ function App() {
           )}
         </section>
 
-        {/* Section 2 - TechStack */}
+        {/* Section 1 - TechStack */}
         <section className={`w-full ${isMobile ? 'min-h-screen px-4 pt-24' : 'h-screen'} flex items-center justify-center bg-black/30`}>
           <div
             className={`${isMobile ? 'w-full max-w-6xl mx-auto' : 'w-full'} ${
@@ -551,12 +561,25 @@ function App() {
           </div>
         </section>
 
+        {/* Section 2 - Work Experience Roadmap */}
+        <section className={`w-full ${isMobile ? 'min-h-screen px-4 pt-24' : 'min-h-screen py-16'} flex items-center justify-center bg-black/30`}>
+          <div
+            className={`${isMobile ? 'w-full max-w-6xl mx-auto' : 'w-full'} ${
+              !isMobile ? `transition-all duration-1000 ${
+                visibleSection === 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+              }` : ''
+            }`}
+          >
+            <WorkExperienceRoadmap isMobile={isMobile} />
+          </div>
+        </section>
+
         {/* Section 3 - Projects */}
         <section className={`w-full ${isMobile ? 'min-h-screen px-4 py-8 pt-24' : 'min-h-screen py-16'} flex flex-col items-center justify-start bg-black/30`}>
           <div
             className={`${isMobile ? 'w-full max-w-6xl mx-auto' : 'w-full'} ${
               !isMobile ? `transition-all duration-1000 ${
-                visibleSection === 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                visibleSection === 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
               }` : ''
             }`}
           >
@@ -599,7 +622,7 @@ function App() {
           <div
             className={`${isMobile ? 'w-full max-w-6xl mx-auto' : 'w-full'} ${
               !isMobile ? `transition-all duration-1000 ${
-                visibleSection === 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                visibleSection === 4 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
               }` : ''
             }`}
           >
@@ -616,9 +639,9 @@ function App() {
           <div
             className={`w-full ${
               isMobile ? 'max-w-6xl mx-auto' : 'max-w-6xl mx-auto'
-            } ${!isMobile ? `transition-opacity duration-1000 ${visibleSection === 4 ? 'opacity-100' : 'opacity-0'}` : ''}`}
+            } ${!isMobile ? `transition-opacity duration-1000 ${visibleSection === 5 ? 'opacity-100' : 'opacity-0'}` : ''}`}
           >
-            {/* Contact Info */}
+       
             <div className={`flex flex-col items-center text-center text-white  ${
               isMobile ? 'p-6' : 'p-10'
             }`}>
@@ -633,11 +656,11 @@ function App() {
               </div>
             </div>
 
-            {/* Comments Section */}
             <CommentsSection isMobile={isMobile} />
           </div>
         </section>
-         <Footer isMobile={isMobile} />
+        
+        <Footer isMobile={isMobile} />
       </div>
     </div>
   )

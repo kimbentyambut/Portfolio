@@ -43,9 +43,10 @@ const Navbar = ({ activeSection, onNavigate }) => {
   const navItems = [
     { id: 0, name: 'Home', icon: '' },
     { id: 1, name: 'Tech Stack', icon: '' },
-    { id: 2, name: 'Projects', icon: '' },
-    { id: 3, name: 'Playground', icon: '' },
-    { id: 4, name: 'Contact', icon: '' }
+     { id: 2, name: 'Work Experience', icon: '' },
+    { id: 3, name: 'Projects', icon: '' },
+    { id: 4, name: 'Playground', icon: '' },
+    { id: 5, name: 'Contact', icon: '' }
   ];
 
   const scrollToSection = (sectionId) => {
@@ -60,14 +61,17 @@ const Navbar = ({ activeSection, onNavigate }) => {
         targetScroll = windowHeight * 0.93;
         break;
       case 2:
-        targetScroll = windowHeight * 1.9;
+        targetScroll = windowHeight * 1.96;
         break;
       case 3:
-        targetScroll = windowHeight * 3;
+        targetScroll = windowHeight * 2.92;
         break;
       case 4:
-        targetScroll = windowHeight * 4.13;
+        targetScroll = windowHeight * 4.05;
         break;
+      case 5:
+        targetScroll = windowHeight * 5.14;
+        brea
       default:
         targetScroll = 0;
     }
