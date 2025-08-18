@@ -43,12 +43,12 @@ app.post("/api/contact", (req, res) => {
   res.json({ success: true, msg: "Message received!" });
 });
 
-// Comments API Routes
+
 app.post("/api/comments", async (req, res) => {
   try {
     const { name, message } = req.body;
 
-    // Validation
+   
     if (!name || !message) {
       return res.status(400).json({ 
         success: false, 
@@ -77,18 +77,18 @@ app.post("/api/comments", async (req, res) => {
       });
     }
 
-    // Create comment document
+
     const comment = {
       name: name.trim(),
       message: message.trim(),
       createdAt: new Date().toISOString(),
-      approved: true // You can add moderation later if needed
+      approved: true 
     };
 
-    // Insert into database
+
     const result = await db.collection("comments").insertOne(comment);
     
-    // Return the created comment
+
     const createdComment = {
       ...comment,
       _id: result.insertedId
@@ -115,7 +115,7 @@ app.get("/api/comments", async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const skip = (page - 1) * limit;
 
-    // Fetch comments, most recent first
+  
     const comments = await db.collection("comments")
       .find({ approved: true })
       .sort({ createdAt: -1 })
@@ -123,7 +123,7 @@ app.get("/api/comments", async (req, res) => {
       .limit(limit)
       .toArray();
 
-    // Get total count for pagination
+ 
     const totalComments = await db.collection("comments").countDocuments({ approved: true });
 
     res.json({
@@ -146,7 +146,6 @@ app.get("/api/comments", async (req, res) => {
   }
 });
 
-// Delete comment (you can add authentication later)
 app.delete("/api/comments/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -183,7 +182,7 @@ app.delete("/api/comments/:id", async (req, res) => {
   }
 });
 
-// Existing likes routes
+
 app.post("/api/likes", async (req, res) => {
   try {
     const result = await db.collection("likes").findOneAndUpdate(

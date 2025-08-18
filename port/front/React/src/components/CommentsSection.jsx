@@ -7,7 +7,7 @@ const CommentsSection = ({ isMobile }) => {
   const [newComment, setNewComment] = useState({ name: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
+  const [expandedComments, setExpandedComments] = useState(new Set());
 
   useEffect(() => {
     fetchComments();
@@ -83,6 +83,28 @@ const CommentsSection = ({ isMobile }) => {
     });
   };
 
+  const truncateMessage = (message, wordLimit = 15) => {
+    const words = message.split(' ');
+    if (words.length <= wordLimit) return message;
+    return words.slice(0, wordLimit).join(' ') + '...';
+  };
+
+  const toggleExpanded = (commentId) => {
+    setExpandedComments(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(commentId)) {
+        newSet.delete(commentId);
+      } else {
+        newSet.add(commentId);
+      }
+      return newSet;
+    });
+  };
+
+  const shouldShowExpand = (message, wordLimit = 15) => {
+    return message.split(' ').length > wordLimit;
+  };
+
   return (
     <div className={`bg-black/40 backdrop-blur-sm rounded-2xl border border-purple-500/30 ${
       isMobile ? 'p-4 max-w-full' : 'p-8 max-w-4xl'
@@ -152,7 +174,6 @@ const CommentsSection = ({ isMobile }) => {
         </div>
       </form>
 
-
       <div className="space-y-4">
         <h4 className={`font-semibold text-white ${isMobile ? 'text-lg' : 'text-xl'}`}>
           Comments ({comments.length})
@@ -168,25 +189,44 @@ const CommentsSection = ({ isMobile }) => {
             <p className="text-gray-400">No comments yet. Be the first to leave one!</p>
           </div>
         ) : (
-          <div className={`space-y-4 ${isMobile ? 'max-h-80' : 'max-h-96'} overflow-y-auto`}>
-            {comments.map((comment, index) => (
-              <div 
-                key={comment._id || index} 
-                className="bg-white/5 border border-purple-400/20 rounded-lg p-4 hover:bg-white/10 transition-colors duration-300"
-              >
-                <div className="flex justify-between items-start mb-2">
-                  <h5 className={`font-medium text-purple-300 ${isMobile ? 'text-sm' : 'text-base'}`}>
-                    {comment.name}
-                  </h5>
-                  <span className={`text-gray-400 ${isMobile ? 'text-xs' : 'text-sm'}`}>
-                    {formatDate(comment.createdAt)}
-                  </span>
+          <div className={`space-y-3 ${isMobile ? 'h-48' : 'h-64'} overflow-y-auto pr-2`}>
+            {comments.map((comment, index) => {
+              const commentId = comment._id || index;
+              const isExpanded = expandedComments.has(commentId);
+              const showExpandButton = shouldShowExpand(comment.message);
+              
+              return (
+                <div 
+                  key={commentId} 
+                  className="bg-white/5 border border-purple-400/20 rounded-lg hover:bg-white/10 transition-colors duration-300 overflow-hidden"
+                >
+                  <div className={`${isMobile ? 'p-3' : 'p-4'}`}>
+                    <div className="flex justify-between items-start mb-2">
+                      <h5 className={`font-medium text-purple-300 ${isMobile ? 'text-sm' : 'text-base'} break-words`}>
+                        {comment.name}
+                      </h5>
+                      <span className={`text-gray-400 ${isMobile ? 'text-xs' : 'text-sm'} ml-2 flex-shrink-0`}>
+                        {formatDate(comment.createdAt)}
+                      </span>
+                    </div>
+                    
+                    <p className={`text-gray-200 ${isMobile ? 'text-sm' : 'text-base'} leading-relaxed mb-2 break-words overflow-wrap-anywhere`}>
+                      {isExpanded ? comment.message : truncateMessage(comment.message)}
+                    </p>
+                    
+                    {showExpandButton && (
+                      <button
+                        onClick={() => toggleExpanded(commentId)}
+                        className={`text-purple-400 hover:text-purple-300 transition-colors duration-200 font-medium
+                          ${isMobile ? 'text-xs' : 'text-sm'}`}
+                      >
+                        {isExpanded ? 'Show less' : 'Show more'}
+                      </button>
+                    )}
+                  </div>
                 </div>
-                <p className={`text-gray-200 ${isMobile ? 'text-sm' : 'text-base'} leading-relaxed`}>
-                  {comment.message}
-                </p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

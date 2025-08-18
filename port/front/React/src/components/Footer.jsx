@@ -80,12 +80,12 @@ const Footer = ({ isMobile }) => {
               <h3 className="text-lg font-bold text-white">Kevin Yabut</h3>
             </div>
             <p className={`text-gray-400 ${isMobile ? 'text-xs' : 'text-xs'} max-w-md`}>
-              Full-stack developer creating innovative solutions.
+              Junior developer creating innovative solutions.
             </p>
             
  
             <div className="flex flex-wrap justify-center md:justify-start gap-1">
-              {['React', 'Node.js', 'AI/ML'].map((tech) => (
+              {['Back-End', 'Front-End', 'AI/ML' , 'Automations' , 'Webscraping', 'Analytics', 'Java Developer'].map((tech) => (
                 <span 
                   key={tech}
                   className="px-2 py-0.5 bg-purple-600/30 text-purple-300 rounded-full text-xs border border-purple-500/30 hover:bg-purple-600/50 transition-colors duration-300"
@@ -150,7 +150,7 @@ const Footer = ({ isMobile }) => {
         
         <div className={`mt-4 pt-3 border-t border-purple-500/30 ${isMobile ? 'text-center' : 'flex justify-between items-center'}`}>
           <div className={`text-gray-500 ${isMobile ? 'text-xs mb-2' : 'text-xs'}`}>
-            <span>© {new Date().getFullYear()} Kevin Yabut • Built with React & Node.js</span>
+            <span>© {new Date().getFullYear()} Kevin Yabut • Built with React & Node.js • This Portfolio Utilizes Github and Render's free services for hosting.</span>
           </div>
      
           <button

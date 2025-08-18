@@ -5,7 +5,7 @@ import image3 from '../../assets/chart.png';
 
 const Webscraping = () => {
   const projectData = {
-    title: "Webscrapers",
+    title: "Webscrapers + Analytics",
     description: "8 Scheduled automated web scrapers with various data from https://www.asxenergy.com.au/, https://www.aemo.com.au/, https://www.bom.gov.au/, https://tradingeconomics.com/, https://www.accc.gov.au/inquiries-and-consultations/gas-inquiry-2017-30/lng-netback-price-series,https://explore.openelectricity.org.au for Energin.co. Housed in a private virtual machine",
     
     technologies: [

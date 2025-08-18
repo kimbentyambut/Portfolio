@@ -502,7 +502,7 @@ function App() {
         case 2:
           return { visible: true, text: "Visit My Playground", onClick: () => scrollToSection(3) };
         case 3:
-          return { visible: true, text: "Get in Touch", onClick: () => scrollToSection(4.1) };
+          return { visible: true, text: "Get in Touch", onClick: () => scrollToSection(4.13) };
         case 4:
           return { visible: false };
         default:
@@ -619,7 +619,7 @@ function App() {
             } ${!isMobile ? `transition-opacity duration-1000 ${visibleSection === 4 ? 'opacity-100' : 'opacity-0'}` : ''}`}
           >
             {/* Contact Info */}
-            <div className={`flex flex-col items-center text-center text-white mb-12 ${
+            <div className={`flex flex-col items-center text-center text-white  ${
               isMobile ? 'p-6' : 'p-10'
             }`}>
               <h2 className={`font-bold mb-4 ${isMobile ? 'text-3xl' : 'text-5xl'}`}>Contact Me</h2>
