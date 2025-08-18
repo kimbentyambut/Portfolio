@@ -18,15 +18,15 @@ const client = new MongoClient(uri, {
 
 let db;
 
-
 async function connectDB() {
   try {
     await client.connect();
     db = client.db("typingChallenge");
     console.log("Connected to MongoDB!");
     
-
+    // Create indexes
     await db.collection("leaderboards").createIndex({ "challenge": 1, "wpm": -1 });
+    await db.collection("comments").createIndex({ "createdAt": -1 });
   } catch (error) {
     console.error("MongoDB connection error:", error);
   }
@@ -43,24 +43,160 @@ app.post("/api/contact", (req, res) => {
   res.json({ success: true, msg: "Message received!" });
 });
 
-//route for like
+// Comments API Routes
+app.post("/api/comments", async (req, res) => {
+  try {
+    const { name, message } = req.body;
 
+    // Validation
+    if (!name || !message) {
+      return res.status(400).json({ 
+        success: false, 
+        error: "Name and message are required" 
+      });
+    }
+
+    if (name.trim().length === 0 || message.trim().length === 0) {
+      return res.status(400).json({ 
+        success: false, 
+        error: "Name and message cannot be empty" 
+      });
+    }
+
+    if (name.length > 50) {
+      return res.status(400).json({ 
+        success: false, 
+        error: "Name must be 50 characters or less" 
+      });
+    }
+
+    if (message.length > 500) {
+      return res.status(400).json({ 
+        success: false, 
+        error: "Message must be 500 characters or less" 
+      });
+    }
+
+    // Create comment document
+    const comment = {
+      name: name.trim(),
+      message: message.trim(),
+      createdAt: new Date().toISOString(),
+      approved: true // You can add moderation later if needed
+    };
+
+    // Insert into database
+    const result = await db.collection("comments").insertOne(comment);
+    
+    // Return the created comment
+    const createdComment = {
+      ...comment,
+      _id: result.insertedId
+    };
+
+    res.json({
+      success: true,
+      message: "Comment posted successfully",
+      comment: createdComment
+    });
+
+  } catch (error) {
+    console.error("Error posting comment:", error);
+    res.status(500).json({ 
+      success: false, 
+      error: "Internal server error" 
+    });
+  }
+});
+
+app.get("/api/comments", async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 50;
+    const page = parseInt(req.query.page) || 1;
+    const skip = (page - 1) * limit;
+
+    // Fetch comments, most recent first
+    const comments = await db.collection("comments")
+      .find({ approved: true })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .toArray();
+
+    // Get total count for pagination
+    const totalComments = await db.collection("comments").countDocuments({ approved: true });
+
+    res.json({
+      success: true,
+      comments: comments,
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(totalComments / limit),
+        totalComments: totalComments,
+        hasMore: skip + comments.length < totalComments
+      }
+    });
+
+  } catch (error) {
+    console.error("Error fetching comments:", error);
+    res.status(500).json({ 
+      success: false, 
+      error: "Internal server error" 
+    });
+  }
+});
+
+// Delete comment (you can add authentication later)
+app.delete("/api/comments/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    if (!id) {
+      return res.status(400).json({ 
+        success: false, 
+        error: "Comment ID is required" 
+      });
+    }
+
+    const result = await db.collection("comments").deleteOne({ 
+      _id: new require('mongodb').ObjectId(id) 
+    });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ 
+        success: false, 
+        error: "Comment not found" 
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "Comment deleted successfully"
+    });
+
+  } catch (error) {
+    console.error("Error deleting comment:", error);
+    res.status(500).json({ 
+      success: false, 
+      error: "Internal server error" 
+    });
+  }
+});
+
+// Existing likes routes
 app.post("/api/likes", async (req, res) => {
   try {
     const result = await db.collection("likes").findOneAndUpdate(
-      { section: "landing" },        // filter
-      { $inc: { count: 1 } },        // increment count
+      { section: "landing" },
+      { $inc: { count: 1 } },
       { 
         returnDocument: "after", 
         upsert: true,
- 
         projection: { count: 1 }
       } 
     );
 
-
     if (!result || !result.value || typeof result.value.count !== 'number') {
-
       const doc = await db.collection("likes").findOne({ section: "landing" });
       const count = doc?.count ?? 1; 
       
@@ -80,9 +216,6 @@ app.post("/api/likes", async (req, res) => {
   }
 });
 
-
-
-//increm
 app.get("/api/likes", async (req, res) => {
   try {
     const doc = await db.collection("likes").findOne({ section: "landing" });
@@ -96,23 +229,15 @@ app.get("/api/likes", async (req, res) => {
   }
 });
 
-console.log("POST /api/likes hit");
-
-
-
-
-
-
+// Existing typing game routes
 app.post("/api/typing-result", async (req, res) => {
   try {
     const { username, challenge, wpm, accuracy, timeElapsed, completionTime } = req.body;
-
 
     if (!username || !challenge || !wpm || !accuracy || !timeElapsed) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
-  
     const existingRecord = await db.collection("leaderboards").findOne({
       username: username.toLowerCase(),
       challenge: challenge
@@ -130,7 +255,6 @@ app.post("/api/typing-result", async (req, res) => {
     };
 
     if (existingRecord) {
-  
       if (parseInt(wpm) > existingRecord.wpm) {
         await db.collection("leaderboards").updateOne(
           { username: username.toLowerCase(), challenge: challenge },
@@ -151,7 +275,6 @@ app.post("/api/typing-result", async (req, res) => {
         });
       }
     } else {
- 
       await db.collection("leaderboards").insertOne({
         ...resultData,
         createdAt: new Date().toISOString()
@@ -176,7 +299,7 @@ app.get("/api/leaderboard/:challenge", async (req, res) => {
 
     const leaderboard = await db.collection("leaderboards")
       .find({ challenge: challenge })
-      .sort({ wpm: -1, timeElapsed: 1 }) 
+      .sort({ wpm: -1, timeElapsed: 1 })
       .limit(limit)
       .toArray();
 
@@ -200,12 +323,9 @@ app.get("/api/leaderboard/:challenge", async (req, res) => {
   }
 });
 
-
 app.get("/api/leaderboards", async (req, res) => {
   try {
-    const challenges = await db.collection("leaderboards")
-      .distinct("challenge");
-
+    const challenges = await db.collection("leaderboards").distinct("challenge");
     const allLeaderboards = {};
     
     for (const challenge of challenges) {
@@ -236,7 +356,6 @@ app.get("/api/leaderboards", async (req, res) => {
   }
 });
 
-
 app.get("/api/user-records/:username", async (req, res) => {
   try {
     const username = req.params.username.toLowerCase();
@@ -265,7 +384,6 @@ app.get("/api/user-records/:username", async (req, res) => {
   }
 });
 
-
 app.get("/api/check-username/:username", async (req, res) => {
   try {
     const username = req.params.username.toLowerCase();
@@ -284,7 +402,6 @@ app.get("/api/check-username/:username", async (req, res) => {
   }
 });
 
-
 app.get("/api/stats", async (req, res) => {
   try {
     const totalUsers = await db.collection("leaderboards").distinct("username");
@@ -302,7 +419,7 @@ app.get("/api/stats", async (req, res) => {
         totalAttempts: totalAttempts,
         topWpm: topWpmRecord ? {
           wpm: topWpmRecord.wpm,
-           user: topWpmRecord.username,
+          user: topWpmRecord.username,
           challenge: topWpmRecord.challenge
         } : null
       }
@@ -313,7 +430,6 @@ app.get("/api/stats", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-
 
 process.on('SIGINT', async () => {
   console.log('Closing MongoDB connection...');

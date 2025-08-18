@@ -19,6 +19,9 @@ import Scraper from './components/projects/Webscraping'
 import FakeNews from './components/projects/FakeNews'
 import Ocr from './components/projects/Ocr'
 import ProjectsCarousel from "./components/ProjectsCarousel";
+import Pathora from "./components/projects/pathora"
+import CommentsSection from './components/CommentsSection'
+import Footer from './components/Footer'
 
 const ScrollArrow = ({ direction = "down", text, visible = true, onClick }) => {
   return (
@@ -266,27 +269,37 @@ function App() {
 
 
   const projectScrollTargets = isMobile ? {
-    'ai-classifier': 2.1,
-    'laundry': 2.1,
-    'scraper': 2.1,
-    'Ocr': 2.1,
-    'FakeNews': 2.1
+    'ai-classifier': 2.4,
+    'laundry': 2.4,
+    'scraper': 2.4,
+    'Ocr': 2.4,
+    'FakeNews': 2.4,
+    'ai': 2.4
   } : {
     'ai-classifier': 1.93,
     'laundry': 2.04,
     'scraper': 2.04,
     'Ocr': 2.04,
-    'FakeNews': 2.04
+    'FakeNews': 2.04,
+    'ai' : 2.04
   }
 
   const projects = [
     {
       id: 'ai-classifier',
-      title: 'Pathee AI Skin Cancer Classifier',
+      title: 'Pathee AI Skin Cancer Classifier (Model)',
       description: 'Machine learning model for BCC, SQCC and Melanoma cancer detection on HPO using image classification',
       icon: '🔬',
       bgImage: pathee,
       component: 'AIImageClassifier'
+    },
+    {
+      id: 'ai',
+      title: 'Pathee AI Skin Cancer Classifier (PWA)',
+      description: 'Progress Web Application for Pathee',
+      icon: '🔬',
+      bgImage: pathee,
+      component: 'Pathora'
     },
     {
       id: 'laundry',
@@ -447,6 +460,8 @@ function App() {
     switch (projectId) {
       case 'ai-classifier':
         return <AIImageClassifier />;
+      case 'ai':
+        return <Pathora/>;
       case 'laundry':
         return <Tjbroz />;
       case 'scraper':
@@ -487,7 +502,7 @@ function App() {
         case 2:
           return { visible: true, text: "Visit My Playground", onClick: () => scrollToSection(3) };
         case 3:
-          return { visible: true, text: "Get in Touch", onClick: () => scrollToSection(4.5) };
+          return { visible: true, text: "Get in Touch", onClick: () => scrollToSection(4.1) };
         case 4:
           return { visible: false };
         default:
@@ -597,23 +612,32 @@ function App() {
         </section>
 
         {/* Section 5 - Contact */}
-        <section className={`w-full ${isMobile ? 'min-h-screen px-4 pt-24' : 'h-screen'} flex items-center justify-center bg-black/30`}>
+        <section className={`w-full ${isMobile ? 'min-h-screen px-4 pt-24' : 'min-h-screen py-16'} flex flex-col items-center justify-start bg-black/30`}>
           <div
-            className={`flex flex-col items-center text-center text-white ${
-              isMobile ? 'p-6 max-w-4xl mx-auto' : 'p-10'
+            className={`w-full ${
+              isMobile ? 'max-w-6xl mx-auto' : 'max-w-6xl mx-auto'
             } ${!isMobile ? `transition-opacity duration-1000 ${visibleSection === 4 ? 'opacity-100' : 'opacity-0'}` : ''}`}
           >
-            <h2 className={`font-bold mb-4 ${isMobile ? 'text-3xl' : 'text-5xl'}`}>Get In Touch</h2>
-            <p className={`text-gray-300 max-w-lg ${isMobile ? 'text-lg mb-6' : 'text-xl'}`}>
-              Interested in working together? Let's connect!
-            </p>
-            <button className={`bg-purple-600 text-white rounded-lg hover:shadow-lg hover:shadow-pink-500/50 transition-all duration-300 ${
-              isMobile ? 'mt-6 px-4 py-2' : 'mt-10 px-6 py-3'
+            {/* Contact Info */}
+            <div className={`flex flex-col items-center text-center text-white mb-12 ${
+              isMobile ? 'p-6' : 'p-10'
             }`}>
-              Contact Me
-            </button>
+              <h2 className={`font-bold mb-4 ${isMobile ? 'text-3xl' : 'text-5xl'}`}>Contact Me</h2>
+              <div className="flex items-center justify-center space-x-2 mb-6">
+                <svg className="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                <span className={`text-gray-300 ${isMobile ? 'text-lg' : 'text-xl'}`}>
+                  kvnyabut@gmail.com
+                </span>
+              </div>
+            </div>
+
+            {/* Comments Section */}
+            <CommentsSection isMobile={isMobile} />
           </div>
         </section>
+         <Footer isMobile={isMobile} />
       </div>
     </div>
   )
