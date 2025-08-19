@@ -316,7 +316,7 @@ const ProfessionalLandingSection = () => {
     <section className={`w-full flex items-center justify-center relative overflow-hidden ${
       isMobile ? 'min-h-screen py-8 px-4' : 'h-screen'
     }`}>
-      {/* Background elements */}
+   
       <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
       <div className="absolute bottom-1/3 right-1/4 w-48 h-48 bg-pink-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
       <div className="absolute top-1/2 right-1/3 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl animate-pulse delay-500"></div>
@@ -338,9 +338,7 @@ const ProfessionalLandingSection = () => {
             <p className={`text-white/80 leading-relaxed ${
               isMobile ? 'text-sm max-w-xs mx-auto' : 'text-lg max-w-lg'
             }`}>
-              Passionate Junior Developer & AI enthusiast. I create innovative and visually 
-              appealing digital experiences. I transform ideas into seamless designs that meet users' 
-              expectations.
+             I am a passionate and driven developer with a strong focus on creating innovative, user-centered digital solutions. I approach every project with a continuous learning mindset, believing that there is always more to discover and improve. This perspective allows me to adapt quickly, embrace new technologies, and consistently refine my skills to deliver high-quality results.
             </p>
           </div>
 

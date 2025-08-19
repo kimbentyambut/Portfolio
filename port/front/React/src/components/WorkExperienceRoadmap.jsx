@@ -3,225 +3,258 @@ import { useState } from 'react';
 const WorkExperienceRoadmap = ({ isMobile = false }) => {
   const [experiences, setExperiences] = useState([
     {
-      id: 1,
-      title: "Junior Web Developer (Contractual)",
-      company: "Energin",
-      period: "2025 - Present",
-      description: "Contractual junior web development role , automation and data processing solutions",
-      technologies: ["Python", "Web Scraping", "Zoho CRM as a whole", "Automation Tools", "Azure Dev Ops", "Deluge"],
-      type: "contract",
+      id: 4,
+      title: "Fullstack Developer",
+      company: "Vapebar Baguio",
+      period: "2023",
+      description: "As a student, this was my first free lancing job I developed a comprehensive inventory system.",
+      technologies: ["PHP", "JavaScript", "SQL","HTML","CSS"],
+      type: "freelance",
       achievements: [
-        "Delivered automated web scraping solutions",
-        "Enhanced CRM workflow efficiency",
-        "Successfully completed contractual objectives",
-        "Fixed tons of Bugs",
-        "Developed features for the User Journey"
-      ]
-    },
-    {
-      id: 2,
-      title: "AI Engineer/Data Analyst (Internship + Contractual)",
-      company: "Energin",
-      period: "2025 - 2025",
-      description: "Working as AI Engineer and Data Analyst with automation focus, handling web scraping, Zoho CRM workflows, and process automation",
-      technologies: ["Python", "Selenium", "MongoDB", "Zoho Analytics", "Zoho CRM", "Deluge", "Make.com", "Power Automate"],
-      type: "current",
-      achievements: [
-        "Created web scrapers using Python+Selenium+MongoDB",
-        "Developed Zoho CRM workflows and Deluge scripts",
-        "Implemented automation solutions with Make.com and Microsoft Power Automate",
-        "Improved data collection and analysis processes",
-        "Created 20 + Analytics Graph for various scraped websites",
-        "Housed 15+ scrapers on windows task scheduler, scrapers are automatically running every morning",
-        "Scraped more than 15 data pages"
+        "Built complete inventory system",
+        "Managed database design",
+        "Deployed locally via Apache"
       ]
     },
     {
       id: 3,
-      title: "Back End Developer (Contractual)",
+      title: "Back End Developer",
       company: "Tjbroz Laundry Hub",
       period: "2024",
-      description: "Developed a Progressive Web App (PWA) for the loyalty customer program of the laundry shop",
-      technologies: ["PHP", "Node", "JavaScript", "CSS", "HTML", "React", "MongoDB", "Express", "Hostinger"],
+      description: "As a student, our team Developed Progressive Web App for loyalty program. I made a lot of back-end functions, one of which is an OTP verification through email using PHP mailer.",
+      technologies: ["PHP", "Node", "React", "MongoDB", "Express", "Javascript","Docker","Figma"],
       type: "freelance",
       achievements: [
-        "Built complete PWA for customer loyalty program",
-        "Successfully deployed website through Hostinger",
-        "Implemented full-stack solution for laundry business",
-        "Created responsive and user-friendly interface",
+        "Built complete PWA system",
+        "Deployed via Hostinger",
+        "Created responsive interface"
       ]
     },
     {
-      id: 4,
-      title: "Fullstack Developer, Database Manager (Freelance)",
-      company: "Vapebar Baguio",
-      period: "2023",
-      description: "Developed a comprehensive inventory system for a vape shop with local hosting deployment",
-      technologies: ["PHP", "JavaScript", "CSS", "HTML", "SQL"],
-      type: "freelance",
+      id: 2,
+      title: "AI Engineer/Data Analyst",
+      company: "Energin",
+      period: "2025",
+      description: "As an intern for 5 months and 2 months contractual I was an AI Engineer and Data Analyst with automation focus.",
+      technologies: ["Python", "Selenium", "MongoDB", "Zoho Analytics","Microsoft Power Automate","Make.com", "Webscraping"],
+      type: "current",
       achievements: [
-        "Built complete inventory management system",
-        "Managed database design and implementation",
-        "Deployed locally through Apache WAMP",
-        "Handled both frontend and backend development"
+        "Created 20+ analytics graphs",
+        "Housed 15+ scrapers on scheduler",
+        "Developed CRM workflows & scripts"
+      ]
+    },
+    {
+      id: 1,
+      title: "Junior Web Developer",
+      company: "Energin",
+      period: "2025 - Present",
+      description: "After internship I was hired as a contractual junior web development role, automation and data processing solutions.",
+      technologies: ["Python", "Web Scraping", "Zoho CRM (As a whole)", "Azure DevOps", "Deluge"],
+      type: "contract",
+      achievements: [
+        "Delivered automated web scraping solutions",
+        "Enhanced CRM workflow efficiency",
+        "Fixed tons of bugs & developed features"
       ]
     }
   ]);
 
-  const [expandedCard, setExpandedCard] = useState(null);
+  const [selectedExperience, setSelectedExperience] = useState(experiences[3]);
+  const [hoveredId, setHoveredId] = useState(null);
 
-  const getTypeColor = (type) => {
+  const getTypeConfig = (type) => {
     switch (type) {
-      case 'internship':
-        return 'from-blue-500 to-cyan-500';
-      case 'freelance':
-        return 'from-green-500 to-emerald-500';
-      case 'project':
-        return 'from-purple-500 to-pink-500';
       case 'current':
-        return 'from-orange-500 to-red-500';
+        return { 
+          gradient: 'from-emerald-400 via-cyan-500 to-blue-500',
+          icon: '🚀',
+          pulse: 'animate-pulse',
+          bg: 'bg-emerald-500/10'
+        };
+      case 'contract':
+        return { 
+          gradient: 'from-violet-500 via-purple-500 to-pink-500',
+          icon: '💼',
+          pulse: '',
+          bg: 'bg-violet-500/10'
+        };
+      case 'freelance':
+        return { 
+          gradient: 'from-orange-400 via-red-500 to-pink-600',
+          icon: '⚡',
+          pulse: '',
+          bg: 'bg-orange-500/10'
+        };
       default:
-        return 'from-gray-500 to-gray-600';
+        return { 
+          gradient: 'from-gray-500 to-gray-600',
+          icon: '💻',
+          pulse: '',
+          bg: 'bg-gray-500/10'
+        };
     }
   };
 
-  const getTypeIcon = (type) => {
-    switch (type) {
-      case 'internship':
-        return '🎓';
-      case 'freelance':
-        return '💼';
-      case 'project':
-        return '🚀';
-      case 'current':
-        return '🎯';
-      default:
-        return '💻';
-    }
+  const selectExperience = (exp) => {
+    setSelectedExperience(exp);
   };
 
-  const toggleExpand = (id) => {
-    setExpandedCard(expandedCard === id ? null : id);
-  };
+  const selectedConfig = getTypeConfig(selectedExperience.type);
 
   return (
-    <div className={`w-full ${isMobile ? 'px-2 py-2' : 'px-4 py-3'}`}>
-      <div className="max-w-3xl mx-auto">
+    <div className="w-full max-w-4xl mx-auto p-6 space-y-6">
       
-        <div className="text-center mb-4">
-          <h2 className={`font-bold text-white mb-1 ${isMobile ? 'text-xl' : 'text-2xl'}`}>
-            Work Experience Roadmap
-          </h2>
-          <p className={`text-gray-400 ${isMobile ? 'text-xs' : 'text-sm'}`}>
-            My journey through various roles and projects
-          </p>
-        </div>
+     
+      <div className="bg-slate-900/90 backdrop-blur-xl border border-white/20 rounded-2xl p-4 shadow-2xl shadow-purple-500/20 text-center">
+        <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-cyan-400 via-violet-400 to-pink-400 bg-clip-text text-transparent">
+          Work Experience Journey
+        </h1>
+      </div>
 
-        <div className="relative">
- 
-          <div className={`absolute ${isMobile ? 'left-4 top-0 bottom-0 w-0.5' : 'left-5 top-0 bottom-0 w-0.5'} bg-gradient-to-b from-purple-500 via-pink-500 to-orange-500 rounded-full`}></div>
-
-          
-          <div className="space-y-2">
-            {experiences.map((exp, index) => (
-              <div
-                key={exp.id}
-                className={`relative ${isMobile ? 'ml-8' : 'ml-10'}`}
-              >
+    
+      <div className="bg-slate-900/90 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-2xl shadow-blue-500/10">
         
-                <div className={`absolute ${isMobile ? '-left-10 top-2' : '-left-12 top-2'} w-4 h-4 rounded-full bg-gradient-to-r ${getTypeColor(exp.type)} flex items-center justify-center shadow-md border border-gray-800`}>
-                  <span className="text-xs">{getTypeIcon(exp.type)}</span>
-                </div>
-
-                <div 
-                  className={`bg-gray-900/90 backdrop-blur-sm border border-gray-700 rounded-md overflow-hidden shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer`}
-                  onClick={() => toggleExpand(exp.id)}
-                >
+        
+        <div className="relative mb-8">
           
-                  <div className={`bg-gradient-to-r ${getTypeColor(exp.type)} p-0.5`}>
-                    <div className={`bg-gray-900/95 ${isMobile ? 'p-2' : 'p-2'}`}>
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1 min-w-0">
-                          <h3 className={`font-bold text-white ${isMobile ? 'text-sm' : 'text-base'} leading-tight`}>
-                            {exp.title}
-                          </h3>
-                          <p className={`text-gray-300 ${isMobile ? 'text-xs' : 'text-xs'} truncate`}>
-                            {exp.company}
-                          </p>
-                          <p className={`text-gray-500 ${isMobile ? 'text-xs' : 'text-xs'}`}>
-                            {exp.period}
-                          </p>
-                        </div>
-                        <div className="ml-2 flex-shrink-0">
-                          <svg 
-                            className={`w-3 h-3 text-white transition-transform duration-200 ${
-                              expandedCard === exp.id ? 'rotate-180' : ''
-                            }`}
-                            fill="none" 
-                            stroke="currentColor" 
-                            viewBox="0 0 24 24"
-                          >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
       
-                  <div className={`${isMobile ? 'p-2' : 'p-2'} pt-0`}>
-                    <p className={`text-gray-300 mb-2 ${isMobile ? 'text-xs' : 'text-xs'} leading-relaxed`}>
-                      {exp.description}
-                    </p>
+          <div className="absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-cyan-400 via-violet-500 to-pink-500 rounded-full transform -translate-y-1/2 shadow-lg"></div>
+          
+          
+          <div className="relative flex justify-between items-center h-12">
+            {experiences.map((exp, index) => {
+              const config = getTypeConfig(exp.type);
+              const isSelected = selectedExperience.id === exp.id;
+              const isHovered = hoveredId === exp.id;
+              
+              return (
+                <div
+                  key={exp.id}
+                  className="relative cursor-pointer group"
+                  onMouseEnter={() => setHoveredId(exp.id)}
+                  onMouseLeave={() => setHoveredId(null)}
+                  onClick={() => selectExperience(exp)}
+                >
+                  
+          
+                  <div className={`relative w-10 h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-r ${config.gradient} 
+                    flex items-center justify-center shadow-2xl border-2 border-white/20
+                    transform transition-all duration-300 ${config.pulse}
+                    ${isSelected || isHovered ? 'scale-125' : 'scale-100'}
+                    ${isSelected ? 'ring-4 ring-white/30' : ''}`}>
+                    <span className="text-sm md:text-base filter drop-shadow-sm">{config.icon}</span>
+                  </div>
 
              
-                    <div className="flex flex-wrap gap-1 mb-2">
-                      {exp.technologies.map((tech, techIndex) => (
-                        <span
-                          key={techIndex}
-                          className={`px-1.5 py-0.5 text-xs bg-gradient-to-r ${getTypeColor(exp.type)} text-white rounded font-medium`}
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
+                  <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
+                    <span className="text-xs text-gray-300 font-medium px-2 py-1 bg-black/50 rounded-full backdrop-blur-sm border border-white/10">
+                      {exp.period}
+                    </span>
+                  </div>
 
-               
-                    <div className={`transition-all duration-200 overflow-hidden ${
-                      expandedCard === exp.id ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'
-                    }`}>
-                      <div className="border-t border-gray-700 pt-2 mt-2">
-                        <h4 className={`font-semibold text-white mb-1 text-xs`}>
-                          Key Achievements:
-                        </h4>
-                        <ul className="space-y-0.5">
-                          {exp.achievements.map((achievement, achIndex) => (
-                            <li key={achIndex} className={`text-gray-300 flex items-start text-xs leading-relaxed`}>
-                              <span className="text-purple-400 mr-1 mt-0.5 text-xs flex-shrink-0">▸</span>
-                              <span className="flex-1">{achievement}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
+                
+                  <div className={`absolute -top-12 left-1/2 transform -translate-x-1/2 transition-all duration-200 z-10
+                    ${isHovered && !isSelected ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'}`}>
+                    <div className="bg-black/90 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-lg whitespace-nowrap border border-white/30 shadow-xl">
+                      {exp.title}
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
+        </div>
 
-      
-          <div className={`relative ${isMobile ? 'ml-8 mt-2' : 'ml-10 mt-3'}`}>
-            <div className={`absolute ${isMobile ? '-left-10 top-1' : '-left-12 top-1'} w-4 h-4 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center justify-center shadow-md border border-gray-800 animate-pulse`}>
-              <span className="text-xs">✨</span>
-            </div>
-            <div className="bg-gray-900/90 backdrop-blur-sm border border-gray-700 rounded-md p-2 text-center">
-              <p className={`text-gray-400 font-medium text-xs`}>
-                The journey continues...
-              </p>
+     
+        <div className="flex justify-center space-x-2">
+          {experiences.map((exp) => (
+            <div
+              key={exp.id}
+              className={`w-2 h-2 rounded-full transition-all duration-300 cursor-pointer
+                ${selectedExperience.id === exp.id 
+                  ? `bg-gradient-to-r ${getTypeConfig(exp.type).gradient}` 
+                  : 'bg-white/20'}`}
+              onClick={() => selectExperience(exp)}
+            ></div>
+          ))}
+        </div>
+      </div>
+
+    
+      <div className="bg-slate-900/90 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl shadow-violet-500/10 overflow-hidden">
+        
+        
+        <div className={`p-4 ${selectedConfig.bg} border-b border-white/10`}>
+          <div className="flex items-center">
+            <span className="text-2xl mr-3">{selectedConfig.icon}</span>
+            <div>
+              <h3 className="text-lg font-bold text-white leading-tight">
+                {selectedExperience.title}
+              </h3>
+              <div className="flex items-center space-x-2 mt-1">
+                <span className={`inline-block px-2 py-1 text-xs font-semibold rounded-full bg-gradient-to-r ${selectedConfig.gradient} text-white`}>
+                  {selectedExperience.company}
+                </span>
+                <span className="text-xs text-gray-400">{selectedExperience.period}</span>
+              </div>
             </div>
           </div>
         </div>
+
+        <div className="p-4 space-y-4">
+          
+          
+          <div>
+            <p className="text-gray-300 text-sm leading-relaxed">
+              {selectedExperience.description}
+            </p>
+          </div>
+
+      
+          <div>
+            <h4 className="text-white font-semibold mb-2 text-sm flex items-center">
+              <span className="mr-2">🛠️</span>
+              Technologies
+            </h4>
+            <div className="flex flex-wrap gap-1.5">
+              {selectedExperience.technologies.map((tech, index) => (
+                <span
+                  key={index}
+                  className="px-2 py-1 text-xs bg-white/10 text-white rounded-lg border border-white/10 backdrop-blur-sm hover:bg-white/20 transition-colors"
+                >
+                  {tech}
+                </span>
+              ))}
+            </div>
+          </div>
+
+       
+          <div>
+            <h4 className="text-white font-semibold mb-3 text-sm flex items-center">
+              <span className="mr-2">🎯</span>
+              Key Achievements
+            </h4>
+            <div className="space-y-2">
+              {selectedExperience.achievements.map((achievement, index) => (
+                <div
+                  key={index}
+                  className="flex items-center text-sm text-gray-300 p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors"
+                >
+                  <span className={`mr-2 w-1.5 h-1.5 rounded-full bg-gradient-to-r ${selectedConfig.gradient} flex-shrink-0`}></span>
+                  <span>{achievement}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+     
+      <div className="bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-xl p-3 shadow-xl text-center">
+        <p className="text-gray-400 text-xs">
+          Click timeline nodes to explore different experiences
+        </p>
       </div>
     </div>
   );
