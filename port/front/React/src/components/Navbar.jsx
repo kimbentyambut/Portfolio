@@ -71,7 +71,7 @@ const Navbar = ({ activeSection, onNavigate }) => {
         break;
       case 5:
         targetScroll = windowHeight * 5.14;
-        brea
+        break;
       default:
         targetScroll = 0;
     }
