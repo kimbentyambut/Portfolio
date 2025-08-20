@@ -278,11 +278,11 @@ function App() {
     'ai': 3.4
   } : {
     'ai-classifier': 2.92,
-    'laundry': 2.7,
-    'scraper': 2.7,
-    'Ocr': 2.7,
-    'FakeNews': 2.7,
-    'ai': 2.7
+    'laundry': 3.04,
+    'scraper': 3.04,
+    'Ocr': 3.04,
+    'FakeNews': 3.04,
+    'ai': 3.04
   }
 
   const projects = [
