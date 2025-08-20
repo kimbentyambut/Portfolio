@@ -101,12 +101,12 @@ const TypeRacerGame = () => {
     fetchGlobalStats();
   }, []);
 
-  // Calculate accuracy with weighted mistakes (mistakes have more impact)
+
   const calculateAccuracy = () => {
     if (totalCharsTyped === 0) return 100;
     
-    // Apply penalty weight to mistakes to make them more impactful
-    const mistakePenalty = mistakesMade * 2; // Each mistake counts as 2 wrong keystrokes
+    
+    const mistakePenalty = mistakesMade * 2; 
     const effectiveWrongKeystrokes = (totalCharsTyped - correctCharsTyped) + mistakePenalty;
     const effectiveTotalKeystrokes = totalCharsTyped + mistakePenalty;
     
@@ -177,27 +177,32 @@ const TypeRacerGame = () => {
   };
 
   const handleUsernameSubmit = () => {
-    if (username.trim().length >= 2) {
-      setIsLoggedIn(true);
-      setShowUsernameModal(false);
+  if (username.trim().length >= 2) {
+    setIsLoggedIn(true);
+    setShowUsernameModal(false);
 
-      setTimeout(() => {
-        window.scrollTo({
-          top: window.innerHeight * 3.2,
-          behavior: "smooth", 
-        });
-      }, 200); 
-    }
-  };
+    setTimeout(() => {
+
+      const isMobile = window.innerWidth < 768;
+      
+      window.scrollTo({
+        top: isMobile 
+          ? window.innerHeight * 4.88
+          : window.innerHeight * 4.1, 
+        behavior: "smooth", 
+      });
+    }, 200); 
+  }
+};
 
   const resetGame = () => {
-    // Clear any existing timer first
+
     if (timerInterval) {
       clearInterval(timerInterval);
       setTimerInterval(null);
     }
 
-    // Reset all game state
+  
     setUserInput('');
     setStartTime(null);
     setEndTime(null);
@@ -215,7 +220,7 @@ const TypeRacerGame = () => {
     setKeystrokeHistory([]);
     setSubmissionStatus('');
 
-    // Focus the input after a brief delay to ensure state is updated
+
     setTimeout(() => {
       if (inputRef.current) {
         inputRef.current.focus();
@@ -226,10 +231,10 @@ const TypeRacerGame = () => {
   const startGame = () => {
     resetGame();
     
-    // Prepare the game but don't start timer yet - wait for first keystroke
+  
     setTimeout(() => {
       setIsGameActive(true);
-      // Don't set startTime here - wait for first input
+     
       setTimeElapsed(0);
       
       if (inputRef.current) {
@@ -244,16 +249,16 @@ const TypeRacerGame = () => {
     const value = e.target.value;
     const previousValue = userInput;
     
-    // Start the timer on first keystroke
+
     if (previousValue.length === 0 && value.length === 1 && !startTime) {
       setStartTime(Date.now());
     }
     
     setUserInput(value);
 
-    // Track every keystroke for cumulative accuracy
+    
     if (value.length > previousValue.length) {
-      // Character was added
+   
       const newCharIndex = previousValue.length;
       const typedChar = value[newCharIndex];
       const expectedChar = currentText[newCharIndex];
@@ -263,25 +268,25 @@ const TypeRacerGame = () => {
       if (typedChar === expectedChar) {
         setCorrectCharsTyped(prev => prev + 1);
       } else {
-        // Track that a mistake was made at this position
+     
         setMistakesMade(prev => prev + 1);
       }
     } else if (value.length < previousValue.length) {
-      // Character(s) were deleted - this is where we penalize corrections
+      
       const deletedCount = previousValue.length - value.length;
       
-      // Count each deletion as an additional keystroke (backspace)
+      
       setTotalCharsTyped(prev => prev + deletedCount);
       
-      // Each correction also counts as a mistake penalty
+   
       setMistakesMade(prev => prev + deletedCount);
     }
 
-    // Update accuracy based on cumulative keystrokes with mistake penalties
+ 
     const currentAccuracy = calculateAccuracy();
     setAccuracy(currentAccuracy);
 
-    // Check for completion
+    
     if (value === currentText) {
       setEndTime(Date.now());
       setIsGameActive(false);
@@ -294,7 +299,7 @@ const TypeRacerGame = () => {
       setTimeout(() => submitResult(), 500);
     }
 
-    // Calculate word and character positions
+
     const words = currentText.split(' ');
     const userWords = value.split(' ');
     let charCount = 0;
@@ -308,7 +313,7 @@ const TypeRacerGame = () => {
     setCurrentWordIndex(wordIndex);
     setCurrentCharIndex(charCount + (userWords[userWords.length - 1] || '').length);
 
-    // Count current errors (characters that don't match)
+
     let errorCount = 0;
     for (let i = 0; i < value.length; i++) {
       if (i >= currentText.length || value[i] !== currentText[i]) {

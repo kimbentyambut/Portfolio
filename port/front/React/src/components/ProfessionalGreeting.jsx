@@ -48,11 +48,11 @@ const ProfessionalGreeting = ({ name = "Kevin" }) => {
   }, [currentIndex, fullText]);
 
   return (
-    <div className={`${isMobile ? 'mb-4 mt-4 px-2' : 'mb-3'}`}>
-      <div className={`font-light ${isMobile ? 'text-sm mb-2' : 'text-lg mb-1'}`}>
+    <div className={`${isMobile ? 'mb-4 mt-4' : 'mb-3'}`}>
+      <div className={`font-light ${isMobile ? 'text-sm mb-2 text-center' : 'text-lg mb-1'}`}>
         <span className="shiny-text">WELCOME TO MY WORLD ✨</span>
       </div>
-      <h1 className={`font-bold leading-tight ${isMobile ? 'text-xl sm:text-2xl mb-3 break-words' : 'text-4xl md:text-6xl mb-2'}`}>
+      <h1 className={`font-bold leading-tight ${isMobile ? 'text-xl sm:text-2xl mb-3 break-words text-center' : 'text-4xl md:text-6xl mb-2'}`}>
         <span className="shiny-text">{displayText}</span>
         {!isComplete && (
           <span className="animate-pulse text-purple-300 ml-1">|</span>
@@ -121,7 +121,7 @@ const StylizedProfilePicture = ({
   }, [isDragging, dragStart, isMobile]);
 
   return (
-    <div className="relative">
+    <div className="relative flex justify-center">
       <div
         className={`relative transition-transform duration-300 ${
           isMobile ? 'cursor-pointer' : 'cursor-grab active:cursor-grabbing'
@@ -322,21 +322,21 @@ const ProfessionalLandingSection = () => {
       <div className="absolute top-1/2 right-1/3 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl animate-pulse delay-500"></div>
       
       <div className={`relative z-10 w-full max-w-7xl mx-auto grid items-center ${
-        isMobile ? 'grid-cols-1 gap-6 px-2' : 'px-6 grid-cols-1 lg:grid-cols-2 gap-12'
+        isMobile ? 'grid-cols-1 gap-6' : 'px-6 grid-cols-1 lg:grid-cols-2 gap-12'
       }`}>
         
-        <div className={`${isMobile ? 'text-center max-w-sm mx-auto' : 'space-y-6'}`}>
+        <div className={`${isMobile ? 'text-center w-full flex flex-col items-center' : 'space-y-6'}`}>
           <ProfessionalGreeting name="Kevin" />
           
           <div className={`${isMobile ? 'mb-4' : 'mb-6'}`}>
-            <h2 className={`font-bold text-white ${isMobile ? 'text-lg sm:text-xl mb-3' : 'text-3xl md:text-5xl mb-4'}`}>
+            <h2 className={`font-bold text-white ${isMobile ? 'text-lg sm:text-xl mb-3 text-center' : 'text-3xl md:text-5xl mb-4'}`}>
               <span className="text-purple-300">Junior</span>{' '}
               <span className="bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
                 Developer
               </span>
             </h2>
             <p className={`text-white/80 leading-relaxed ${
-              isMobile ? 'text-sm max-w-xs mx-auto' : 'text-lg max-w-lg'
+              isMobile ? 'text-sm max-w-xs mx-auto text-center' : 'text-lg max-w-lg'
             }`}>
              I am a passionate and driven developer with a strong focus on creating innovative, user-centered digital solutions. I approach every project with a continuous learning mindset, believing that there is always more to discover and improve. This perspective allows me to adapt quickly, embrace new technologies, and consistently refine my skills to deliver high-quality results.
             </p>
@@ -347,7 +347,7 @@ const ProfessionalLandingSection = () => {
           <SocialIcons />
         </div>
 
-        <div className={`flex ${isMobile ? 'justify-center mt-2' : 'justify-center lg:justify-end'}`}>
+        <div className={`flex ${isMobile ? 'justify-center items-center w-full' : 'justify-center lg:justify-end'}`}>
           <StylizedProfilePicture
             frontImage={profilePic}
             backImage={profilePic2}

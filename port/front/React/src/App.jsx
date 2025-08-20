@@ -268,21 +268,21 @@ function App() {
     }
   ]
 
-  // Updated project scroll targets for 6 sections
+
   const projectScrollTargets = isMobile ? {
     'ai-classifier': 4.4,
-    'laundry': 4.4,
-    'scraper': 4.4,
-    'Ocr': 4.4,
-    'FakeNews': 4.4,
-    'ai': 4.4
+    'laundry': 3.4,
+    'scraper': 3.4,
+    'Ocr': 3.4,
+    'FakeNews': 3.4,
+    'ai': 3.4
   } : {
-    'ai-classifier': 3.93,
-    'laundry': 4.04,
-    'scraper': 4.04,
-    'Ocr': 4.04,
-    'FakeNews': 4.04,
-    'ai': 4.04
+    'ai-classifier': 2.92,
+    'laundry': 3.04,
+    'scraper': 3.04,
+    'Ocr': 3.04,
+    'FakeNews': 3.04,
+    'ai': 3.04
   }
 
   const projects = [
@@ -397,26 +397,25 @@ function App() {
     };
   }, [isMobile]);
 
-  // Updated scroll logic for 6 sections
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
       const windowHeight = window.innerHeight;
       
       if (isMobile) {
-        // Mobile thresholds for 6 sections
-        if (scrollY < windowHeight * 1.2) {
-          setVisibleSection(0); // Home
-        } else if (scrollY < windowHeight * 2.2) {
-          setVisibleSection(1); // Tech Stack
+      
+        if (scrollY < windowHeight * 2.2) {
+          setVisibleSection(0); 
         } else if (scrollY < windowHeight * 3.2) {
-          setVisibleSection(2); // Work Experience
+          setVisibleSection(1); 
         } else if (scrollY < windowHeight * 4.2) {
-          setVisibleSection(3); // Projects
+          setVisibleSection(2); 
         } else if (scrollY < windowHeight * 5.2) {
-          setVisibleSection(4); // Playground
+          setVisibleSection(3); 
+        } else if (scrollY < windowHeight * 6.2) {
+          setVisibleSection(4); 
         } else {
-          setVisibleSection(5); // Contact
+          setVisibleSection(5); 
         }
       } else {
     
