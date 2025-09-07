@@ -141,8 +141,8 @@ const Footer = ({ isMobile }) => {
 
         
             <div className="flex items-center justify-center md:justify-start space-x-1.5">
-              <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div>
-              <span className="text-gray-400 text-xs">Available</span>
+              <div className="w-1.5 h-1.5 bg-red-400 rounded-full animate-pulse"></div>
+              <span className="text-gray-400 text-xs">Currently Employed</span>
             </div>
           </div>
         </div>

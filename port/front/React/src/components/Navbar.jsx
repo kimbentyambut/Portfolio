@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import logoPic from "../assets/logo.png";  
 
 const customStyles = `
   button:focus,
@@ -43,7 +44,7 @@ const Navbar = ({ activeSection, onNavigate }) => {
   const navItems = [
     { id: 0, name: 'Home', icon: '' },
     { id: 1, name: 'Tech Stack', icon: '' },
-     { id: 2, name: 'Work Experience', icon: '' },
+      { id: 2, name: 'Work Experience', icon: '' },
     { id: 3, name: 'Projects', icon: '' },
     { id: 4, name: 'Playground', icon: '' },
     { id: 5, name: 'Contact', icon: '' }
@@ -97,7 +98,7 @@ const Navbar = ({ activeSection, onNavigate }) => {
             : 'bg-white/5 backdrop-blur-sm'
         }`}
       >
-     <div className="max-w-7xl mx-auto px--10">
+      <div className="max-w-7xl mx-auto px--10">
 
         <div className="flex items-center justify-center h-20">
 
@@ -107,9 +108,16 @@ const Navbar = ({ activeSection, onNavigate }) => {
             onClick={() => scrollToSection(0)}
           >
             <div className="relative ">
-              <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/30 group-hover:bg-white/30 group-hover:border-blue-300/50 transition-all duration-300 shadow-lg">
-                <span className="text-white font-bold text-xl drop-shadow-lg">K</span>
+              {/* START: MODIFIED LOGO SECTION */}
+              <div className="w-12 h-12 transition-all duration-300 shadow-lg">
+                <img
+                  // v-- IMPORTANT: Place the path to your logo image here --v
+                  src="/logo.png" 
+                  alt="Logo"
+                  className="w-full h-full object-cover rounded-2xl"
+                />
               </div>
+              {/* END: MODIFIED LOGO SECTION */}
               <div className="absolute -inset-1 bg-gradient-to-br from-blue-400/30 to-cyan-300/30 rounded-2xl opacity-0 group-hover:opacity-100 blur-sm transition-all duration-300"></div>
             </div>
             <div className="hidden sm:block ">
@@ -120,7 +128,7 @@ const Navbar = ({ activeSection, onNavigate }) => {
             </div>
           </div>
 
-           <div className="hidden md:flex flex-1 justify-end space-x-8">
+          <div className="hidden md:flex flex-1 justify-end space-x-8">
   {navItems.map((item) => (
     <button
       key={item.id}
@@ -137,7 +145,7 @@ const Navbar = ({ activeSection, onNavigate }) => {
   ))}
 </div>
 
-        
+      
           <div className="md:hidden">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -189,12 +197,12 @@ const Navbar = ({ activeSection, onNavigate }) => {
                     : 'text-white/90 hover:text-white hover:bg-white/20 hover:backdrop-blur-md'
                 } ${index !== navItems.length - 1 ? 'border-b border-white/10' : ''}`}
               >
-               
+                
                 {activeSection === item.id && (
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-400/15 via-cyan-300/15 to-transparent"></div>
                 )}
                 
-           
+            
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent transform translate-x-full group-hover:translate-x-[-100%] transition-transform duration-500"></div>
                 
                 <span className="text-xl relative z-10 drop-shadow-sm">{item.icon}</span>

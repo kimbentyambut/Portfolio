@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 
-import profilePic from "../assets/test.png";  
-import profilePic2 from "../assets/Image2.png";
+import profilePic from "../assets/gemini2.png";  
+import profilePic2 from "../assets/gemini.png";
 import Resume from "../assets/resume.pdf"
 import { profile } from '@tensorflow/tfjs';
 import LikeButton from './LikeButton';
