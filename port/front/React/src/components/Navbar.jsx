@@ -108,11 +108,11 @@ const Navbar = ({ activeSection, onNavigate }) => {
             onClick={() => scrollToSection(0)}
           >
             <div className="relative ">
-              {/* START: MODIFIED LOGO SECTION */}
+     
               <div className="w-12 h-12 transition-all duration-300 shadow-lg">
                 <img
-                  // v-- IMPORTANT: Place the path to your logo image here --v
-                  src="/logo.png" 
+           
+                  src={logoPic} 
                   alt="Logo"
                   className="w-full h-full object-cover rounded-2xl"
                 />
