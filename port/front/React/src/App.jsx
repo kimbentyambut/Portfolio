@@ -76,8 +76,12 @@ function App() {
   const [visibleSection, setVisibleSection] = useState(0)
   const [currentView, setCurrentView] = useState('projects')
   const [isMobile, setIsMobile] = useState(false)
+  const [characterX, setCharacterX] = useState(0)
+  const [isCharacterWalking, setIsCharacterWalking] = useState(false)
+  const [characterFacing, setCharacterFacing] = useState('right')
   const vantaRef = useRef(null)
   const vantaEffect = useRef(null)
+  const pressedKeysRef = useRef(new Set())
 
   // Check if device is mobile
   useEffect(() => {
@@ -520,8 +524,97 @@ function App() {
     }
   };
 
+  const getSectionVisibilityClass = (sectionIndex) => {
+    if (isMobile) return '';
+    return `transition-all duration-1000 ${
+      visibleSection === sectionIndex ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+    }`;
+  };
+
+  useEffect(() => {
+    if (isMobile) return;
+
+    const shouldIgnoreKeyboard = (target) => {
+      if (!target) return false;
+      const tagName = target.tagName?.toLowerCase();
+      return tagName === 'input' || tagName === 'textarea' || target.isContentEditable;
+    };
+
+    const handleKeyDown = (event) => {
+      if (shouldIgnoreKeyboard(event.target)) return;
+
+      const key = event.key.toLowerCase();
+      if (!['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(key)) {
+        return;
+      }
+
+      event.preventDefault();
+      pressedKeysRef.current.add(key);
+    };
+
+    const handleKeyUp = (event) => {
+      const key = event.key.toLowerCase();
+      pressedKeysRef.current.delete(key);
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+
+    let animationFrameId;
+    const horizontalSpeed = 5;
+    const scrollSpeed = 12;
+    const minX = -220;
+    const maxX = 220;
+
+    const animateCharacter = () => {
+      const keys = pressedKeysRef.current;
+      let moved = false;
+
+      if (keys.has('w') || keys.has('arrowup')) {
+        window.scrollBy({ top: -scrollSpeed, behavior: 'auto' });
+        moved = true;
+      }
+
+      if (keys.has('s') || keys.has('arrowdown')) {
+        window.scrollBy({ top: scrollSpeed, behavior: 'auto' });
+        moved = true;
+      }
+
+      setCharacterX((previousX) => {
+        let nextX = previousX;
+
+        if (keys.has('a') || keys.has('arrowleft')) {
+          nextX = Math.max(minX, previousX - horizontalSpeed);
+          setCharacterFacing('left');
+          moved = true;
+        }
+
+        if (keys.has('d') || keys.has('arrowright')) {
+          nextX = Math.min(maxX, previousX + horizontalSpeed);
+          setCharacterFacing('right');
+          moved = true;
+        }
+
+        return nextX;
+      });
+
+      setIsCharacterWalking(moved);
+      animationFrameId = window.requestAnimationFrame(animateCharacter);
+    };
+
+    animationFrameId = window.requestAnimationFrame(animateCharacter);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+      window.cancelAnimationFrame(animationFrameId);
+      pressedKeysRef.current.clear();
+      setIsCharacterWalking(false);
+    };
+  }, [isMobile]);
+
   return (
-    <div className={`w-full relative ${isMobile ? 'overflow-x-hidden' : ''}`}>
+    <div className={`portfolio-page w-full relative ${isMobile ? 'overflow-x-hidden' : ''}`}>
       {/* ===== nav bar ===== */}
       <Navbar activeSection={visibleSection} />
 
@@ -534,53 +627,50 @@ function App() {
       {/* ==== scroll arrow animation ===== */}
       <ScrollArrow {...getArrowProps()} />
 
+      {!isMobile && (
+        <div className="fixed bottom-4 left-1/2 z-40 pointer-events-none" style={{ transform: `translateX(calc(-50% + ${characterX}px))` }}>
+          <div className={`select-none text-center transition-transform duration-100 ${isCharacterWalking ? 'translate-y-[-4px]' : 'translate-y-0'}`}>
+            <div className="text-xs sm:text-sm text-white/80 mb-2 bg-black/35 backdrop-blur-md px-3 py-1 rounded-full border border-white/20">
+              Use WASD or Arrow Keys to explore
+            </div>
+            <div className={`text-4xl sm:text-5xl drop-shadow-[0_8px_20px_rgba(0,0,0,0.65)] ${characterFacing === 'left' ? 'scale-x-[-1]' : 'scale-x-100'}`}>
+              🧑‍💻
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ===== all sections ===== */}
       <div className="relative z-10">
         {/* Section 0 - Home */}
-        <section className={`w-full ${isMobile ? 'min-h-screen px-4 pt-24' : 'h-screen'} flex items-center justify-center bg-black/30`}>
-          {isMobile ? (
-            <div className="w-full max-w-6xl mx-auto">
-              <Profile scrollToSection={scrollToSection} />
-            </div>
-          ) : (
+        <section className="portfolio-section portfolio-section--home bg-black/30">
+          <div className="portfolio-container">
             <Profile scrollToSection={scrollToSection} />
-          )}
+          </div>
         </section>
 
         {/* Section 1 - TechStack */}
-        <section className={`w-full ${isMobile ? 'min-h-screen px-4 pt-24' : 'h-screen'} flex items-center justify-center bg-black/30`}>
+        <section className="portfolio-section portfolio-section--tech bg-black/30">
           <div
-            className={`${isMobile ? 'w-full max-w-6xl mx-auto' : 'w-full'} ${
-              !isMobile ? `transition-all duration-1000 ${
-                visibleSection === 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-              }` : ''
-            }`}
+            className={`portfolio-container ${getSectionVisibilityClass(1)}`}
           >
             <TechStackCarousel techStack={myTechStack} />
           </div>
         </section>
 
         {/* Section 2 - Work Experience Roadmap */}
-        <section className={`w-full ${isMobile ? 'min-h-screen px-4 pt-24' : 'min-h-screen py-16'} flex items-center justify-center bg-black/30`}>
+        <section className="portfolio-section portfolio-section--experience bg-black/30">
           <div
-            className={`${isMobile ? 'w-full max-w-6xl mx-auto' : 'w-full'} ${
-              !isMobile ? `transition-all duration-1000 ${
-                visibleSection === 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-              }` : ''
-            }`}
+            className={`portfolio-container ${getSectionVisibilityClass(2)}`}
           >
             <WorkExperienceRoadmap isMobile={isMobile} />
           </div>
         </section>
 
         {/* Section 3 - Projects */}
-        <section className={`w-full ${isMobile ? 'min-h-screen px-4 py-8 pt-24' : 'min-h-screen py-16'} flex flex-col items-center justify-start bg-black/30`}>
+        <section className="portfolio-section portfolio-section--projects bg-black/30">
           <div
-            className={`${isMobile ? 'w-full max-w-6xl mx-auto' : 'w-full'} ${
-              !isMobile ? `transition-all duration-1000 ${
-                visibleSection === 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-              }` : ''
-            }`}
+            className={`portfolio-container ${getSectionVisibilityClass(3)}`}
           >
             {currentView === 'projects' ? (
               <ProjectsCarousel
@@ -590,7 +680,7 @@ function App() {
             ) : (
               <>
                 {/* back button */}
-                <div className={`w-full ${isMobile ? 'mb-6 px-4' : 'max-w-6xl mx-auto px-8 mb-10 ml-10'}`}>
+                <div className={`w-full ${isMobile ? 'mb-6 px-2' : 'max-w-6xl mx-auto px-8 mb-10'}`}>
                   <button
                     onClick={navigateBackToProjects}
                     className={`inline-flex items-center rounded-lg 
@@ -608,7 +698,7 @@ function App() {
                 </div>
 
                 {/* project component */}
-                <div className={`${isMobile ? 'w-full px-4' : 'w-full max-w-[1100px] mx-auto'}`}>
+                <div className={`${isMobile ? 'w-full px-2' : 'w-full max-w-[1100px] mx-auto'}`}>
                   {renderProjectComponent(currentView)}
                 </div>
               </>
@@ -617,13 +707,9 @@ function App() {
         </section>
 
         {/* Section 4 - Playground */}
-        <section className={`w-full ${isMobile ? 'min-h-screen px-4 py-8 pt-24' : 'min-h-screen py-16'} flex flex-col items-center justify-center bg-black/30`}>
+        <section className="portfolio-section portfolio-section--playground bg-black/30">
           <div
-            className={`${isMobile ? 'w-full max-w-6xl mx-auto' : 'w-full'} ${
-              !isMobile ? `transition-all duration-1000 ${
-                visibleSection === 4 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-              }` : ''
-            }`}
+            className={`portfolio-container ${getSectionVisibilityClass(4)}`}
           >
             <div className={`playground-grid ${isMobile ? 'w-full' : ''}`}>
               <div className={`playground-item ${isMobile ? 'w-full' : ''}`}>
@@ -634,11 +720,11 @@ function App() {
         </section>
 
         {/* Section 5 - Contact */}
-        <section className={`w-full ${isMobile ? 'min-h-screen px-4 pt-24' : 'min-h-screen py-16'} flex flex-col items-center justify-start bg-black/30`}>
+        <section className="portfolio-section portfolio-section--contact bg-black/30">
           <div
-            className={`w-full ${
-              isMobile ? 'max-w-6xl mx-auto' : 'max-w-6xl mx-auto'
-            } ${!isMobile ? `transition-opacity duration-1000 ${visibleSection === 5 ? 'opacity-100' : 'opacity-0'}` : ''}`}
+            className={`portfolio-container ${
+              !isMobile ? `transition-opacity duration-1000 ${visibleSection === 5 ? 'opacity-100' : 'opacity-0'}` : ''
+            }`}
           >
        
             <div className={`flex flex-col items-center text-center text-white  ${

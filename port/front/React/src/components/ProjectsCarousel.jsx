@@ -4,8 +4,21 @@ const ProjectsCarousel = ({ projects, onProjectClick }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [hoveredCard, setHoveredCard] = useState(null);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
 
-  const cardsPerView = 3;
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+      setIsTablet(window.innerWidth >= 768 && window.innerWidth < 1200);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const cardsPerView = isMobile ? 1 : isTablet ? 2 : 3;
   const maxSlide = Math.max(0, projects.length - cardsPerView);
 
   // Auto play
@@ -34,6 +47,12 @@ const ProjectsCarousel = ({ projects, onProjectClick }) => {
     setIsAutoPlaying(false);
   };
 
+  useEffect(() => {
+    if (currentSlide > maxSlide) {
+      setCurrentSlide(0);
+    }
+  }, [currentSlide, maxSlide]);
+
   const handleProjectClick = (event, projectId) => {
     event.preventDefault();
     event.stopPropagation();
@@ -59,44 +78,45 @@ const ProjectsCarousel = ({ projects, onProjectClick }) => {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4">
-      <div className="text-center mb-12">
-        <h2 className="text-5xl text-[#FEEEEC]/100 font-bold mb-4">
+    <div className="w-full max-w-7xl mx-auto px-2 sm:px-4">
+      <div className="text-center mb-8 sm:mb-12">
+        <h2 className="text-3xl sm:text-4xl lg:text-5xl text-[#FEEEEC]/100 font-bold mb-4">
           Corporate Projects 🌌
         </h2>
-        <p className="text-xl text-[#FEEEEC]/90 mb-4">
-          Hover over the cards to explore my latest work
+        <p className="text-base sm:text-lg lg:text-xl text-[#FEEEEC]/90 mb-3 sm:mb-4">
+          {isMobile ? "Swipe or use arrows to browse my projects" : "Hover over the cards to explore my latest work"}
         </p>
-        <div className="text-sm text-[#FEEEEC]/60">
+        <div className="text-xs sm:text-sm text-[#FEEEEC]/60">
           Use arrows to navigate • Click on a card to view details
         </div>
       </div>
 
       <div className="relative">
         <div className="overflow-hidden rounded-2xl">
-          <div className="relative h-[460px] flex items-center justify-center">
+          <div className="relative h-[430px] sm:h-[460px] flex items-center justify-center">
             {projects
               .slice(currentSlide, currentSlide + cardsPerView)
               .map((project, index) => {
                 const actualIndex = currentSlide + index;
                 const isHovered = hoveredCard === actualIndex;
-                const position = index - 1;
+                const centerIndex = cardsPerView === 1 ? 0 : cardsPerView === 2 ? 0.5 : 1;
+                const position = index - centerIndex;
 
-                let baseTranslateX = position * 320;
+                let baseTranslateX = position * (isMobile ? 0 : isTablet ? 260 : 320);
                 let baseRotation = position * 3;
-                let baseScale = index === 1 ? 1 : 0.9;
-                let baseZIndex = index === 1 ? 20 : 10;
+                let baseScale = cardsPerView === 1 ? 1 : Math.abs(position) < 0.6 ? 1 : 0.9;
+                let baseZIndex = Math.abs(position) < 0.6 ? 20 : 10;
 
-                const hoverRotation = isHovered ? 0 : baseRotation;
+                const hoverRotation = isMobile ? 0 : isHovered ? 0 : baseRotation;
                 const hoverTranslateX = baseTranslateX;
-                const hoverTranslateY = isHovered ? -20 : 0;
-                const hoverScale = isHovered ? 1.05 : baseScale;
+                const hoverTranslateY = isMobile ? 0 : isHovered ? -20 : 0;
+                const hoverScale = isMobile ? baseScale : isHovered ? 1.05 : baseScale;
                 const hoverZIndex = isHovered ? 50 : baseZIndex;
 
                 return (
                   <div
                     key={project.id}
-                    className="absolute w-80 h-96 cursor-pointer group"
+                    className="absolute w-[88vw] max-w-80 h-[360px] sm:h-96 cursor-pointer group touch-manipulation"
                     style={{
                       transform: `translateX(${hoverTranslateX}px) translateY(${hoverTranslateY}px) rotate(${hoverRotation}deg) scale(${hoverScale})`,
                       zIndex: hoverZIndex,
@@ -131,17 +151,19 @@ const ProjectsCarousel = ({ projects, onProjectClick }) => {
                           )}
                         </div>
 
-                        <h3 className="text-xl font-bold text-white text-center mb-3 leading-tight">
+                        <h3 className="text-lg sm:text-xl font-bold text-white text-center mb-3 leading-tight">
                           {project.title}
                         </h3>
 
-                        <p className="text-gray-200 text-xs leading-relaxed text-center mb-4 flex-grow">
+                        <p className="text-gray-200 text-xs sm:text-sm leading-relaxed text-center mb-4 flex-grow">
                           {project.description}
                         </p>
 
                         <div
                           className={`transition-all duration-300 ${
                             isHovered
+                              ? "opacity-100 translate-y-0"
+                              : isMobile
                               ? "opacity-100 translate-y-0"
                               : "opacity-0 translate-y-4"
                           }`}
@@ -190,7 +212,7 @@ const ProjectsCarousel = ({ projects, onProjectClick }) => {
         <button
           type="button"
           onClick={prevSlide}
-          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/40 hover:bg-black/60 backdrop-blur-sm border border-white/10 rounded-full p-3 transition-all duration-300 group opacity-70 hover:opacity-100 z-30"
+          className="absolute left-1 sm:left-4 top-1/2 transform -translate-y-1/2 bg-black/40 hover:bg-black/60 backdrop-blur-sm border border-white/10 rounded-full p-2 sm:p-3 transition-all duration-300 group opacity-80 hover:opacity-100 z-30"
           onMouseEnter={() => setIsAutoPlaying(false)}
         >
           <svg
@@ -211,7 +233,7 @@ const ProjectsCarousel = ({ projects, onProjectClick }) => {
         <button
           type="button"
           onClick={nextSlide}
-          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/40 hover:bg-black/60 backdrop-blur-sm border border-white/10 rounded-full p-3 transition-all duration-300 group opacity-70 hover:opacity-100 z-30"
+          className="absolute right-1 sm:right-4 top-1/2 transform -translate-y-1/2 bg-black/40 hover:bg-black/60 backdrop-blur-sm border border-white/10 rounded-full p-2 sm:p-3 transition-all duration-300 group opacity-80 hover:opacity-100 z-30"
           onMouseEnter={() => setIsAutoPlaying(false)}
         >
           <svg

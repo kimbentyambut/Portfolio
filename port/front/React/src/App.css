@@ -50,3 +50,54 @@ button:focus {box-shadow:none !important;}
   animation: shine 3s linear infinite;
 }
 
+.portfolio-page {
+  overflow-x: clip;
+}
+
+.portfolio-section {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6rem 1.5rem 2rem;
+}
+
+.portfolio-section--home {
+  min-height: 100vh;
+}
+
+.portfolio-section--projects,
+.portfolio-section--contact {
+  align-items: flex-start;
+}
+
+.portfolio-container {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+}
+
+@media (max-width: 1024px) {
+  .portfolio-section {
+    padding-inline: 1rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .portfolio-section {
+    min-height: auto;
+    padding-top: 5.75rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .portfolio-section--home {
+    min-height: 100svh;
+  }
+
+  .portfolio-section--projects .portfolio-container,
+  .portfolio-section--contact .portfolio-container {
+    padding-bottom: 0.75rem;
+  }
+}
+
